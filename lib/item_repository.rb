@@ -4,9 +4,10 @@ require_relative 'item'
 
 class ItemRepository
 
-  attr_reader :all
+  attr_reader :all, :file
 
-  def initialize
+  def initialize(file)
+    @file = file
     @all= []
   end
 

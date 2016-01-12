@@ -2,19 +2,19 @@ require 'csv'
 require_relative '../lib/merchant'
 require 'pry'
 class MerchantRepository
-  attr_reader :all
+  attr_reader :all, contents
 
-  def initialize
+  def initialize(file)
     @all = []
+    @contents = CSV.open "#{file}", headers: true, header_converters: :symbol
+    parse_data
   end
 
-  def load_data(file)
-    contents = CSV.open "#{file}", headers: true, header_converters: :symbol
-
+  def parse_data
     contents.each do |row|
-      merchant_data = {:id => row[:id], :name  => row[:name],
+      data = {:id => row[:id], :name  => row[:name],
       :created_at => row[:created_at], :updated_at =>  row[:updated_at]}
-      @all << Merchant.new(merchant_data)
+      @all << Merchant.new(data)
     end
   end
 
