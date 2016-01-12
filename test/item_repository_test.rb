@@ -13,7 +13,6 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_all
     refute ir.all.empty?
-    assert ir.all.length > 0
   end
 
   def test_find_by_id_found
@@ -43,12 +42,12 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_find_all_with_description_found
     items = ir.find_all_with_description("glitter")
-    assert items.length > 0
+    refute items.empty?
   end
 
   def test_find_all_with_description_found_case_insensitive
     items = ir.find_all_with_description("GLITTER")
-    assert items.length > 0
+    refute items.empty?
   end
 
   def test_find_all_with_description_not_found
