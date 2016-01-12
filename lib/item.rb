@@ -6,10 +6,6 @@ class Item
     @data = data
   end
 
-  def contents
-    data[:contents]
-  end
-
   def id
     data[:id]
   end
@@ -32,6 +28,10 @@ class Item
 
   def updated_at
     data[:updated_at]
+  end
+
+  def merchant_id
+    data[:merchant_id]
   end
 
 end

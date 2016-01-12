@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'time'
+require 'bigdecimal'
 require_relative '../lib/item'
 
 class ItemTest < Minitest::Test
@@ -13,7 +14,7 @@ class ItemTest < Minitest::Test
                 :merchant_id => 1,
                 :name => "Pencil",
                 :description => "You can use it to write things",
-                :unit_price => 1200, #BigDecimal.new(10.99,4),
+                :unit_price => BigDecimal.new(12.00,4),
                 :created_at => DateTime.strptime("2016-01-11 20:59:20 UTC", "%F %T"),
                 :updated_at => DateTime.strptime("2009-12-09 12:08:04 UTC", "%F %T")
               })
@@ -27,12 +28,17 @@ class ItemTest < Minitest::Test
     assert_equal "Pencil", item.name
   end
 
+  def test_merchant_id
+    assert_equal 1, item.merchant_id
+  end
+
   def test_description
     assert_equal "You can use it to write things", item.description
   end
 
   def test_unit_price
-    assert_equal 1200, item.unit_price
+    assert_equal BigDecimal, item.unit_price.class
+    assert item.unit_price.inspect.include?("0.12E2")
   end
 
   def test_created_at

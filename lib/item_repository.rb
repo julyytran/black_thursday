@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'item'
+require 'bigdecimal'
 
 class ItemRepository
 
@@ -16,7 +17,7 @@ class ItemRepository
     @all << Item.new({:id => row[0],
       :name => row[:name],
       :description => row[:description],
-      :unit_price => row[:unit_price],
+      :unit_price => BigDecimal.new(row[:unit_price], 4),
       :merchant_id => row[:merchant_id],
       :created_at => row[:created_at],
       :updated_at => row[:updated_at]})
@@ -43,12 +44,14 @@ class ItemRepository
 
   def find_all_by_price(price)
     all.select do |x|
-      x.unit_price == price
+      x.unit_price.to_i == price
     end
   end
 
   def find_all_by_price_in_range(range)
-    # returns either [] or instances of Item where the supplied price is in the supplied range (a single Ruby range instance is passed in)
+    all.select do |x|
+      range.include?(x.unit_price.to_i)
+    end
   end
 
   def find_all_by_merchant_id(id)
