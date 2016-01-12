@@ -22,7 +22,7 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_find_by_id_not_found
     item = ir.find_by_id("0000000")
-    assert_equal NilClass, item.class
+    assert_equal nil, item
   end
 
   def test_find_by_name_found
@@ -37,7 +37,7 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_find_by_name_not_found
     item = ir.find_by_name("Super cool awesome thing")
-    assert_equal NilClass, item.class
+    assert_equal nil, item
   end
 
   def test_find_all_with_description_found
@@ -56,7 +56,7 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_price_found
-    items = ir.find_all_by_price("1300")
+    items = ir.find_all_by_price(1300)
     refute items.empty?
   end
 
@@ -66,11 +66,13 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_price_in_range_found
-
+    items = ir.find_all_by_price_in_range(700..4000)
+    refute items.empty?
   end
 
   def test_find_all_by_price_in_range_not_found
-
+    items = ir.find_all_by_price_in_range(-1..0)
+    assert items.empty?
   end
 
   def test_find_all_by_merchant_id_found
