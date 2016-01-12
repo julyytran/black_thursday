@@ -55,7 +55,6 @@ class ItemRepository
     all.select do |x|
       x.merchant_id == id
     end
-    # returns either [] or instances of Item where the supplied merchant ID matches that supplied
   end
 
 end
