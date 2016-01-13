@@ -45,7 +45,7 @@ class ItemRepositoryTest < Minitest::Test
     refute items.empty?
   end
 
-  def test_case_insensitive_when_searching_item_name
+  def test_case_insensitive_when_searching_item_description
     items = ir.find_all_with_description("GLITTER")
     refute items.empty?
   end

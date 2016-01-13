@@ -19,15 +19,15 @@ class Item
   end
 
   def unit_price
-    data[:unit_price]
+    BigDecimal.new(data[:unit_price], data[:unit_price].length)
   end
 
   def created_at
-    data[:created_at]
+    DateTime.strptime(data[:created_at], "%F %T")
   end
 
   def updated_at
-    data[:updated_at]
+    DateTime.strptime(data[:updated_at], "%F %T")
   end
 
   def merchant_id
