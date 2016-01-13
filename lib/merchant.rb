@@ -1,4 +1,5 @@
 class Merchant
+
   attr_reader :data
 
   def initialize(data)
@@ -14,10 +15,11 @@ class Merchant
   end
 
   def created_at
-    data[:created_at]
+    DateTime.strptime(data[:created_at], "%F %T")
   end
 
   def updated_at
-    data[:updated_at]
+    DateTime.strptime(data[:updated_at], "%F %T")
   end
+
 end

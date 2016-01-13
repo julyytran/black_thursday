@@ -14,9 +14,9 @@ class ItemTest < Minitest::Test
                 :merchant_id => 1,
                 :name => "Pencil",
                 :description => "You can use it to write things",
-                :unit_price => BigDecimal.new(12.00,4),
-                :created_at => DateTime.strptime("2016-01-11 20:59:20 UTC", "%F %T"),
-                :updated_at => DateTime.strptime("2009-12-09 12:08:04 UTC", "%F %T")
+                :unit_price => "1200",
+                :created_at => "2016-01-11 20:59:20 UTC",
+                :updated_at => "2009-12-09 12:08:04 UTC",
               })
   end
 
@@ -37,8 +37,9 @@ class ItemTest < Minitest::Test
   end
 
   def test_unit_price
-    assert_equal BigDecimal, item.unit_price.class
-    assert item.unit_price.inspect.include?("0.12E2")
+    price = item.unit_price
+    assert_equal BigDecimal, price.class
+    assert price.inspect.include?("0.12E4")
   end
 
   def test_created_at
