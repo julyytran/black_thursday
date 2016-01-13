@@ -7,8 +7,7 @@ class ItemRepositoryTest < Minitest::Test
   attr_reader :ir
 
   def setup
-    @ir = ItemRepository.new
-    @ir.parse_data("./data/items.csv")
+    @ir = ItemRepository.new("./data/items.csv")
   end
 
   def test_item_repo_is_not_empty
@@ -17,7 +16,7 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_returns_item_id
     item = ir.find_by_id("263395237")
-    assert_equal "263395237", item.id
+    assert_equal "263395237", item[:id]
   end
 
   def test_returns_nil_if_item_id_not_found
@@ -27,12 +26,12 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_returns_name_of_item_name
     item = ir.find_by_name("510+ RealPush Icon Set")
-    assert_equal "510+ RealPush Icon Set", item.name
+    assert_equal "510+ RealPush Icon Set", item[:name]
   end
 
   def test_case_insensitive_when_searching_item_name
     item = ir.find_by_name("510+ realpush icon set")
-    assert_equal "510+ RealPush Icon Set", item.name
+    assert_equal "510+ RealPush Icon Set", item[:name]
   end
 
   def test_returns_nil_if_name_not_found

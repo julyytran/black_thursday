@@ -15,7 +15,6 @@ class SalesEngineTest < Minitest::Test
   end
 
   def test_returns_merchant_id
-    skip
     se = SalesEngine.from_csv({
       :items    => './data/items.csv',
       :merchants => './data/merchants.csv'})
@@ -26,7 +25,6 @@ class SalesEngineTest < Minitest::Test
   end
 
   def test_returns_item_id
-    skip
     se = SalesEngine.from_csv({
       :items    => './data/items.csv',
       :merchants => './data/merchants.csv'})
