@@ -4,7 +4,6 @@ require_relative '../lib/sales_engine'
 
 class SalesEngineTest < Minitest::Test
 
-
   def test_loads_data_into_repositories
     se = SalesEngine.from_csv({
       :items    => './data/items.csv',
@@ -15,7 +14,8 @@ class SalesEngineTest < Minitest::Test
     refute ir.all.empty?
   end
 
-  def test_find_merchant_id
+  def test_returns_merchant_id
+    skip
     se = SalesEngine.from_csv({
       :items    => './data/items.csv',
       :merchants => './data/merchants.csv'})
@@ -25,7 +25,8 @@ class SalesEngineTest < Minitest::Test
     assert_equal "12334105", merchant_1.id
   end
 
-  def test_find_item_id
+  def test_returns_item_id
+    skip
     se = SalesEngine.from_csv({
       :items    => './data/items.csv',
       :merchants => './data/merchants.csv'})

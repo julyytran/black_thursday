@@ -4,7 +4,7 @@ require_relative '../lib/merchant'
 
 class MerchantTest < Minitest::Test
 
-  def test_returns_integer_id_of_merchant
+  def test_returns_id_of_merchant
     m = Merchant.new({:id => "00000000"})
 
     assert "00000000", m.id

@@ -11,13 +11,6 @@ class MerchantRepositoryTest < Minitest::Test
     refute mr.all.empty?
   end
 
-  def test_merchant_array_has_merchants
-    mr = MerchantRepository.new
-    mr.parse_data("./data/merchants.csv")
-
-    assert_equal 475, mr.all.count
-  end
-
   def test_returns_nil_if_merchant_id_is_not_found
     mr = MerchantRepository.new
     mr.parse_data("./data/merchants.csv")
@@ -33,7 +26,7 @@ class MerchantRepositoryTest < Minitest::Test
     assert_equal "12334105", merchant1.id
   end
 
-  def test_returns_nil__if_merchant_name_not_found
+  def test_returns_nil_if_merchant_name_not_found
     mr = MerchantRepository.new
     mr.parse_data("./data/merchants.csv")
     merchant1 = mr.find_by_name('Turing')
@@ -57,7 +50,7 @@ class MerchantRepositoryTest < Minitest::Test
     assert_equal 'MiniatureBikez', merchant1.name
   end
 
-  def test_find_by_all_if_merchant_name_not_found
+  def test_returns_empty_array_when_name_not_found
     mr = MerchantRepository.new
     mr.parse_data("./data/merchants.csv")
     merchant1 = mr.all_by_name("Turing")
@@ -65,11 +58,12 @@ class MerchantRepositoryTest < Minitest::Test
     assert_equal [], merchant1
   end
 
-  def test_returns_all_matches_of_merchant
+  def test_returns_all_matches_of_merchant_with_name_fragment
     mr = MerchantRepository.new
     mr.parse_data("./data/merchants.csv")
     merchant1 = mr.all_by_name("m")
 
     assert_equal "MiniatureBikez", merchant1[0].name
+    assert_equal "LolaMarleys", merchant1[1].name
   end
 end

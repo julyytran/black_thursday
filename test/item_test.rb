@@ -5,7 +5,6 @@ require 'bigdecimal'
 require_relative '../lib/item'
 
 class ItemTest < Minitest::Test
-
   attr_reader :item
 
   def setup
@@ -20,37 +19,36 @@ class ItemTest < Minitest::Test
               })
   end
 
-  def test_id
+  def test_returns_item_id
     assert_equal 1, item.id
   end
 
-  def test_name
+  def test_returns_item_name
     assert_equal "Pencil", item.name
   end
 
-  def test_merchant_id
+  def test_returns_merchant_id
     assert_equal 1, item.merchant_id
   end
 
-  def test_description
+  def test_returns_description_of_item
     assert_equal "You can use it to write things", item.description
   end
 
-  def test_unit_price
+  def test_returns_unit_price_of_item
     assert_equal BigDecimal, item.unit_price.class
     assert item.unit_price.inspect.include?("0.12E2")
   end
 
-  def test_created_at
+  def test_returns_when_item_was_created
     time = item.created_at
     assert_equal DateTime, time.class
     assert_equal "2016-01-11T20:59:20+00:00", time.to_s
   end
 
-  def test_updated_at
+  def test_returns_when_item_was_updated
     time = item.updated_at
     assert_equal DateTime, time.class
     assert_equal "2009-12-09T12:08:04+00:00", time.to_s
   end
-
 end
