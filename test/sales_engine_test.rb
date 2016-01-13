@@ -1,9 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require_relative '../lib/merchant_repo'
-require_relative '../lib/item_repository'
 require_relative '../lib/sales_engine'
-require 'pry'
+
 class SalesEngineTest < Minitest::Test
 
 
