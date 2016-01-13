@@ -5,16 +5,15 @@ require 'bigdecimal'
 
 class ItemRepository
 
-  attr_reader :all, :file
+  attr_reader :all, :contents
 
   def initialize(file)
-    @file = file
     @all= []
+    @contents = CSV.open "#{file}", headers: true, header_converters: :symbol
+    parse_data
   end
 
-  def load_data(file)
-    contents = CSV.open "#{file}", headers: true, header_converters: :symbol
-
+  def parse_data
     contents.each do |row|
     @all << Item.new({:id => row[0],
       :name => row[:name],

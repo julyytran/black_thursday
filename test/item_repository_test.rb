@@ -7,8 +7,7 @@ class ItemRepositoryTest < Minitest::Test
   attr_reader :ir
 
   def setup
-    @ir = ItemRepository.new
-    ir.load_data("./data/items.csv")
+    @ir = ItemRepository.new("./data/items.csv")
   end
 
   def test_all

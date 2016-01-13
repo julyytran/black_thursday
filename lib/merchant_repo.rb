@@ -31,9 +31,9 @@ class MerchantRepository
 
   end
 
-  def all_by_name(name)
+  def all_by_name(description)
       all.select do |merchant|
-      merchant.name.downcase == name.downcase
+      merchant.name.downcase.include?(description.downcase) 
     end
   end
 end
