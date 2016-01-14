@@ -55,6 +55,6 @@ class MerchantRepositoryTest < Minitest::Test
     mr = MerchantRepository.new("./data/merchants.csv")
     merchant1 = mr.all_by_name("m")
 
-    assert_equal "MiniatureBikez", merchant1[0]
+    assert_equal "MiniatureBikez", merchant1[0].name
   end
 end
