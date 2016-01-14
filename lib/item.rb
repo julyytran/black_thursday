@@ -34,4 +34,9 @@ class Item
     data[:merchant_id]
   end
 
+  def merchant
+    mi = merchant_id
+    merchant = SalesEngine.merchants
+    merchant.find_by_id(mi)
+  end
 end
