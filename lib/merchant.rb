@@ -21,5 +21,4 @@ class Merchant
   def updated_at
     DateTime.strptime(data[:updated_at], "%F %T")
   end
-
 end

@@ -7,8 +7,8 @@ class ItemRepository
   attr_reader :all
 
   def initialize(file_path)
-    contents = CSV.open "#{file_path}", headers: true, header_converters: :symbol
-    @all = contents.to_a.map { |row| row.to_hash}
+    content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
+    @all = content.to_a.map { |row| row.to_hash}
   end
 
   def find_by_id(id)

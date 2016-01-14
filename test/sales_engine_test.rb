@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative '../lib/sales_engine'
+# require 'pry'
 
 class SalesEngineTest < Minitest::Test
 
@@ -33,4 +34,15 @@ class SalesEngineTest < Minitest::Test
 
     assert_equal "263395237", item_1[:id]
   end
-end
+
+  def test_returns_all_items_that_match_a_merchants_id
+    skip
+    se = SalesEngine.from_csv({
+      :items    => './data/items.csv',
+      :merchants => './data/merchants.csv'})
+      merchant = se.merchants.find_by_id("12334105")
+      binding.pry
+
+      assert_equal "", merchant.items
+    end
+  end

@@ -20,7 +20,7 @@ class MerchantRepositoryTest < Minitest::Test
     mr = MerchantRepository.new("./data/merchants.csv")
     merchant1 = mr.find_by_id("12334105")
 
-    assert_equal "12334105", merchant1[:id]
+    assert_equal "12334105", merchant1.id
   end
 
   def test_returns_nil_if_merchant_name_not_found
@@ -34,14 +34,14 @@ class MerchantRepositoryTest < Minitest::Test
     mr = MerchantRepository.new("./data/merchants.csv")
     merchant1 = mr.find_by_name('MiniatureBikez')
 
-    assert_equal 'MiniatureBikez', merchant1[:name]
+    assert_equal 'MiniatureBikez', merchant1.name
   end
 
   def test_case_insensive_when_searching_merchant_name
     mr = MerchantRepository.new("./data/merchants.csv")
     merchant1 = mr.find_by_name('MINIATUREBIKEZ')
 
-    assert_equal 'MiniatureBikez', merchant1[:name]
+    assert_equal 'MiniatureBikez', merchant1.name
   end
 
   def test_returns_empty_array_when_name_not_found
@@ -55,6 +55,6 @@ class MerchantRepositoryTest < Minitest::Test
     mr = MerchantRepository.new("./data/merchants.csv")
     merchant1 = mr.all_by_name("m")
 
-    assert_equal "MiniatureBikez", merchant1[0][:name]
+    assert_equal "MiniatureBikez", merchant1[0]
   end
 end
