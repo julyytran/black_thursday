@@ -22,11 +22,11 @@ def status
 end
 
 def created_at
-  data[:created_at]
+  DateTime.strptime(data[:created_at], "%F")
 end
 
 def updated_at
-  data[:updated_at]
+  DateTime.strptime(data[:updated_at], "%F")
 end
 
 def merchants
