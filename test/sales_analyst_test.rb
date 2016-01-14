@@ -10,7 +10,7 @@ class SalesAnalystTest < Minitest::Test
     @se = SalesEngine.from_csv({
       :items    => './data/items.csv',
       :merchants => './data/merchants.csv'})
-      @sa = SalesAnalyst.new(se)
+    @sa = SalesAnalyst.new(se)
   end
 
   def test_average_items_per_merchant
@@ -27,7 +27,7 @@ class SalesAnalystTest < Minitest::Test
     skip
     merchant_list = sa.merchants_with_low_item_count
     refute merchant_list.empty?
-    assert_equal Merchant, merchant_list[0].class 
+    assert_equal Merchant, merchant_list[0].class
   end
 
   def test_average_item_price_for_merchant
