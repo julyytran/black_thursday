@@ -21,4 +21,14 @@ class Merchant
   def updated_at
     DateTime.strptime(data[:updated_at], "%F %T")
   end
+
+  def items
+    merchant_id = id
+    items = SalesEngine.items
+    items.find_all_by_merchant_id(merchant_id)
+  end
+#extract merchant id from merchant object  call id method to extract
+#create an item repository object
+#pass in merchant id into the find by method that is called on the item repo object
+#
 end
