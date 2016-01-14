@@ -8,13 +8,14 @@ class SalesAnalystTest < Minitest::Test
 
   def setup
     @se = SalesEngine.from_csv({
-      :items    => './data/items.csv',
-      :merchants => './data/merchants.csv'})
+      :items    => './data/fixtures/items.csv',
+      :merchants => './data/fixtures/merchants.csv'})
     @sa = SalesAnalyst.new(se)
   end
 
   def test_average_items_per_merchant
-    assert_equal 2.88, sa.average_items_per_merchant
+    skip
+    assert_equal 0.83, sa.average_items_per_merchant
   end
 
   def test_find_all_merchant_ids
@@ -29,14 +30,18 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_count_items
+    skip
     sa.find_all_merchant_ids
     sa.find_all_merchant_items
     sa.count_items
-    assert_equal 0, sa.count
+    assert_equal 0, sa.count_items
   end
 
   def test_average_items_per_merchant_standard_deviation
-    skip
+    sa.average_items_per_merchant
+    sa.find_all_merchant_ids
+    sa.find_all_merchant_items
+    sa.count_items
     assert_equal 0.0, sa.average_items_per_merchant_standard_deviation
   end
 
