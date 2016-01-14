@@ -1,17 +1,20 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative '../lib/sales_engine'
+require 'pry'
 
 class SalesEngineTest < Minitest::Test
 
-  attr_reader :mr, :ir
+  attr_reader :mr, :ir, :iv
 
   def setup
     @se = SalesEngine.from_csv({
       :items    => './data/fixtures/items.csv',
-      :merchants => './data/fixtures/merchants.csv'})
+      :merchants => './data/fixtures/merchants.csv',
+      :invoices => './data/fixtures/invoices.csv'})
     @mr = @se.merchants
     @ir = @se.items
+    @iv = @se.invoices
   end
 
   def test_loads_data_into_repositories
@@ -35,9 +38,28 @@ class SalesEngineTest < Minitest::Test
     assert_equal 1, merchant_items.count
     end
 
-    def test_returns_merchant_that_match_item_id
-      item = ir.find_by_id("263395237")
-      assert_equal '12334141', item.merchant.id
-    end
-
+  def test_returns_merchant_that_match_item_id
+    item = ir.find_by_id("263395237")
+    assert_equal '12334141', item.merchant.id
   end
+
+  def test_returns_invoice_that_match_invoice_id
+    invoice = iv.find_by_id("1")
+    assert_equal "1", invoice.id
+  end
+
+  def test_returns_all_invoices_that_match_merchant_id
+    merchant = mr.find_by_id("12334176")
+    merchant_invoices = merchant.invoices
+
+    assert_equal 21, merchant_invoices.count
+    assert_equal "155", merchant_invoices[0].id
+  end
+
+  def test_returns_merchant_that_matches_invoice_merchant_id
+    invoice = iv.find_by_id('155')
+    merchant = invoice.merchant_id
+
+    assert_equal "12334176", merchant
+  end
+end
