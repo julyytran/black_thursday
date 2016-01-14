@@ -1,29 +1,44 @@
 require_relative '../lib/sales_engine'
 
 class SalesAnalyst
-  attr_reader :sales_engine
+  attr_reader :sales_engine, :merchants, :items, :average, :merchant_ids, :merchant_items
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
+    @merchants = sales_engine.merchants
+    @items = sales_engine.items
+    @average = average
+    @merchant_ids = merchant_ids
+    @merchant_items = []
   end
 
   def average_items_per_merchant
-    all_merchants = sales_engine.merchants
-    merchant_ids = all_merchants.select do |id|
-      id[:id]
-    end
-
-    all_items = sales_engine.items
-    merchant_items = merchant_ids.each do |id|
-    all_items.find_all_by_merchant_id(id)
-    end
-
-    merchant_items
-
+    average = items.all.count.to_f / merchants.all.count.to_f
+    average.round(2)
   end
 
-  def average_items_per_merchant_standard_deviation
+  def find_all_merchant_ids
+    merchant_ids = merchants.all.map do |merchant|
+      merchant.id
+    end
+  end
 
+  def find_all_merchant_items
+    merchant_ids.each do |merchant_id|
+      merchant_items << items.find_all_by_merchant_id(merchant_id)
+    end
+  end
+
+  def count_items
+    merchant_items.map do |items|
+      
+  end
+  def average_items_per_merchant_standard_deviation
+    #for each merchant item count subtract the mean
+    #sq the result
+    #take all the sq results
+    #find the mean
+    #then sq root of mean
   end
 
   def merchants_with_low_item_count # => [merchant, merchant, merchant]
