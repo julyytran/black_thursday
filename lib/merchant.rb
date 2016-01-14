@@ -27,8 +27,4 @@ class Merchant
     items = SalesEngine.items
     items.find_all_by_merchant_id(merchant_id)
   end
-#extract merchant id from merchant object  call id method to extract
-#create an item repository object
-#pass in merchant id into the find by method that is called on the item repo object
-#
 end
