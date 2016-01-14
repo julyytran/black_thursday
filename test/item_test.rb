@@ -5,6 +5,7 @@ require 'bigdecimal'
 require_relative '../lib/item'
 
 class ItemTest < Minitest::Test
+
   attr_reader :item
 
   def setup

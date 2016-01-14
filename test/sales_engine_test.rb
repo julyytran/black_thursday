@@ -21,7 +21,7 @@ class SalesEngineTest < Minitest::Test
     mr = se.merchants
     merchant_1 = mr.find_by_id("12334105")
 
-    assert_equal "12334105", merchant_1[:id]
+    assert_equal "12334105", merchant_1.id
   end
 
   def test_returns_item_id
@@ -31,6 +31,6 @@ class SalesEngineTest < Minitest::Test
     ir = se.items
     item_1 = ir.find_by_id("263395237")
 
-    assert_equal "263395237", item_1[:id]
+    assert_equal "263395237", item_1.id
   end
 end
