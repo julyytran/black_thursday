@@ -14,16 +14,26 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_average_items_per_merchant
-
     assert_equal 2.88, sa.average_items_per_merchant
   end
 
-  def test_returns_all_merchant_ids
-    refute sa.find_all_merchant_ids.empty?
+  def test_find_all_merchant_ids
+    sa.find_all_merchant_ids
+    refute sa.merchant_ids.empty?
   end
 
-  def test_returns_an_array_of_all_merchants_and_their_items
-    refute sa.find_all_merchant_items
+  def test_find_all_mercant_items
+    sa.find_all_merchant_ids
+    sa.find_all_merchant_items
+    refute sa.merchant_items.empty?
+  end
+
+  def test_count_items
+    sa.find_all_merchant_ids
+    sa.find_all_merchant_items
+    sa.count_items
+    assert_equal 0, sa.count
+  end
 
   def test_average_items_per_merchant_standard_deviation
     skip
