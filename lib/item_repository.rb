@@ -7,43 +7,48 @@ class ItemRepository
   attr_reader :all
 
   def initialize(file_path)
+<<<<<<< HEAD
     content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.to_a.map { |row| row.to_hash}
+=======
+    content = CSV.open "#{file_path}", headers: true, header_converters: :symbol
+    @all = content.to_a.map { |row| Item.new(row.to_hash)}
+>>>>>>> 46d86545a58010c9f5cbb0e84921e897fd87f178
   end
 
   def find_by_id(id)
     all.detect do |x|
-      x[:id] == id
+      x.id == id
     end
   end
 
   def find_by_name(name)
     all.detect do |x|
-      x[:name].downcase == name.downcase
+      x.name.downcase == name.downcase
     end
   end
 
   def find_all_with_description(description)
     all.select do |x|
-      x[:description].downcase.include?(description.downcase)
+      x.description.downcase.include?(description.downcase)
     end
   end
 
   def find_all_by_price(price)
     all.select do |x|
-      x[:unit_price].to_i == price.to_i
+      x.unit_price.to_i == price.to_i
     end
   end
 
   def find_all_by_price_in_range(range)
     all.select do |x|
-      range.include?(x[:unit_price].to_i)
+      range.include?(x.unit_price.to_i)
     end
   end
 
   def find_all_by_merchant_id(id)
     all.select do |x|
-      x[:merchant_id] == id
+      x.merchant_id == id
     end
   end
 

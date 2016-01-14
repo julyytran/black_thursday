@@ -5,8 +5,13 @@ class MerchantRepository
   attr_reader :all
 
   def initialize(file_path = nil)
+<<<<<<< HEAD
     content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.to_a.map { |row| Merchant.new(row.to_hash)}
+=======
+    content = CSV.open "#{file_path}", headers: true, header_converters: :symbol
+    @all = content.to_a.map { |row| row.to_hash}
+>>>>>>> 46d86545a58010c9f5cbb0e84921e897fd87f178
   end
 
   def find_by_id(id)
