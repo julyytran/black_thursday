@@ -7,7 +7,7 @@ class ItemRepositoryTest < Minitest::Test
   attr_reader :ir
 
   def setup
-    @ir = ItemRepository.new("./data/items.csv")
+    @ir = ItemRepository.new("./data/fixtures/items.csv")
   end
 
   def test_item_repo_is_not_empty
@@ -55,12 +55,12 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_unit_price_of_item
-    items = ir.find_all_by_price(1300)
+    items = ir.find_all_by_price("1300")
     refute items.empty?
   end
 
   def test_find_all_by_price_not_found
-    items = ir.find_all_by_price(0)
+    items = ir.find_all_by_price("0")
     assert_equal [], items
   end
 

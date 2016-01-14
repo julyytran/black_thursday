@@ -53,4 +53,5 @@ class ItemTest < Minitest::Test
     assert_equal DateTime, time.class
     assert_equal "2009-12-09T12:08:04+00:00", time.to_s
   end
+
 end
