@@ -16,6 +16,12 @@ class InvoiceRepository
     end
   end
 
+  def find_all_by_customer_id(customer_id)
+    all.select do |invoice|
+      invoice.customer_id == customer_id
+    end
+  end
+
   def find_all_by_merchant_id(merchant_id)
     all.select do |invoice|
       invoice.merchant_id == merchant_id
