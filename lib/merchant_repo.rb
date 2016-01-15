@@ -26,5 +26,4 @@ class MerchantRepository
       merchant.name.downcase.include?(description.downcase)
     end
   end
-
 end

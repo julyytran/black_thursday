@@ -3,7 +3,6 @@ require 'minitest/pride'
 require_relative '../lib/item_repository'
 
 class ItemRepositoryTest < Minitest::Test
-
   attr_reader :ir
 
   def setup
@@ -83,5 +82,4 @@ class ItemRepositoryTest < Minitest::Test
     items = ir.find_all_by_merchant_id("0")
     assert [], items
   end
-
 end

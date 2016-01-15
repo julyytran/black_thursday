@@ -3,7 +3,6 @@ require 'bigdecimal'
 require_relative 'item'
 
 class ItemRepository
-
   attr_reader :all
 
   def initialize(file_path = nil)
@@ -46,5 +45,4 @@ class ItemRepository
       x.merchant_id == id
     end
   end
-
 end

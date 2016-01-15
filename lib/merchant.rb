@@ -1,5 +1,4 @@
 class Merchant
-
   attr_reader :data
 
   def initialize(data)
@@ -26,5 +25,11 @@ class Merchant
     merchant_id = id
     items = SalesEngine.items
     items.find_all_by_merchant_id(merchant_id)
+  end
+
+  def invoices
+    merchant_id = id
+    invoices = SalesEngine.invoices
+    invoices.find_all_by_merchant_id(merchant_id)
   end
 end

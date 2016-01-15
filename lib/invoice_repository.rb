@@ -5,8 +5,8 @@ require_relative 'invoice'
 class InvoiceRepository
   attr_reader :all
 
-  def initialize(data)
-    content = CSV.open "#{data}", headers: true, header_converters: :symbol
+  def initialize(file_path = nil)
+    content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.map { |row| Invoice.new(row.to_h) }
   end
 
@@ -16,20 +16,15 @@ class InvoiceRepository
     end
   end
 
-  def find_all_by_customer_id(customer_id)
+  def find_all_by_merchant_id(merchant_id)
     all.select do |invoice|
+      invoice.merchant_id == merchant_id
     end
-    # returns either [] or one or more matches which have a matching customer ID
-
   end
 
-  def find_all_by_merchant_id
-    # returns either [] or one or more matches which have a matching merchant ID
-
-  end
-
-  def find_all_by_status
-    # returns either [] or one or more matches which have a matching status
-
+  def find_all_by_status(status)
+    all.select do |invoice|
+      invoice.status == status
+    end
   end
 end

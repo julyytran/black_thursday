@@ -3,7 +3,6 @@ require 'minitest/pride'
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
-
   attr_reader :se, :sa
 
   def setup
@@ -45,5 +44,4 @@ class SalesAnalystTest < Minitest::Test
     assert_equal Item, golden[0].class
     assert_equal "263410685", golden[0].id
   end
-
 end

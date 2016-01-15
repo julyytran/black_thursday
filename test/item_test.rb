@@ -5,7 +5,6 @@ require 'bigdecimal'
 require_relative '../lib/item'
 
 class ItemTest < Minitest::Test
-
   attr_reader :item
 
   def setup
@@ -16,8 +15,7 @@ class ItemTest < Minitest::Test
                 :description => "You can use it to write things",
                 :unit_price => "1200",
                 :created_at => "2016-01-11 20:59:20 UTC",
-                :updated_at => "2009-12-09 12:08:04 UTC",
-              })
+                :updated_at => "2009-12-09 12:08:04 UTC",})
   end
 
   def test_returns_item_id
@@ -53,5 +51,4 @@ class ItemTest < Minitest::Test
     assert_equal DateTime, time.class
     assert_equal "2009-12-09T12:08:04+00:00", time.to_s
   end
-
 end

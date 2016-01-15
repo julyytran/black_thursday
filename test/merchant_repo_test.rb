@@ -3,7 +3,6 @@ require 'minitest/pride'
 require_relative '../lib/merchant_repo'
 
 class MerchantRepositoryTest < Minitest::Test
-
   attr_reader :mr
 
   def setup
