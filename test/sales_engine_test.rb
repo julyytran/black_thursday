@@ -32,7 +32,7 @@ class SalesEngineTest < Minitest::Test
   def test_returns_all_items_that_match_a_merchants_id
     merchant = mr.find_by_id("12334105")
     merchant_items = merchant.items
-    assert_equal 1, merchant_items.count
+    assert_equal 3, merchant_items.count
     end
 
     def test_returns_merchant_that_match_item_id

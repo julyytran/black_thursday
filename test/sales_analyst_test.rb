@@ -14,63 +14,36 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_average_items_per_merchant
-    skip
-    assert_equal 0.83, sa.average_items_per_merchant
-  end
-
-  def test_find_all_merchant_ids
-    sa.find_all_merchant_ids
-    refute sa.merchant_ids.empty?
-  end
-
-  def test_find_all_mercant_items
-    sa.find_all_merchant_ids
-    sa.find_all_merchant_items
-    refute sa.merchant_items.empty?
-  end
-
-  def test_count_items
-    skip
-    sa.find_all_merchant_ids
-    sa.find_all_merchant_items
-    sa.count_items
-    assert_equal 0, sa.count_items
+    assert_equal 7.232323232323233, sa.average_items_per_merchant
   end
 
   def test_average_items_per_merchant_standard_deviation
-    sa.average_items_per_merchant
-    sa.find_all_merchant_ids
-    sa.find_all_merchant_items
-    sa.count_items
-    assert_equal 0.0, sa.average_items_per_merchant_standard_deviation
+    assert_equal 5.64346953806178, sa.average_items_per_merchant_standard_deviation
   end
 
   def test_merchants_with_low_item_count
-    skip
     merchant_list = sa.merchants_with_low_item_count
     refute merchant_list.empty?
     assert_equal Merchant, merchant_list[0].class
   end
 
   def test_average_item_price_for_merchant
-    skip
-    avg = sa.average_item_price_for_merchant("12334112")
+    avg = sa.average_item_price_for_merchant("12334195")
     assert_equal BigDecimal, avg.class
-    assert_equal avg.inspect.include?("ANSWER")
+    assert avg.inspect.include?('0.48335E5')
   end
 
   def test_average_price_per_merchant
-    skip
-    avg = sa.average_price_for_merchant
+    avg = sa.average_average_price_per_merchant
     assert_equal BigDecimal, avg.class
-    assert_equal avg.inspect.include?("ANSWER")
+    assert avg.inspect.include?('0.1300984840 2537485582 4682811764 7058823529 41E6')
   end
 
   def test_golden_items
-    skip
     golden = sa.golden_items
     refute golden.empty?
     assert_equal Item, golden[0].class
+    assert_equal "263410685", golden[0].id
   end
 
 end

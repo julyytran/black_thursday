@@ -13,11 +13,12 @@ class InvoiceRepository
   def find_by_id(id)
     all.detect do |invoice|
       invoice.id == id
+    end
   end
 
   def find_all_by_customer_id(customer_id)
     all.select do |invoice|
-      
+    end
     # returns either [] or one or more matches which have a matching customer ID
 
   end
