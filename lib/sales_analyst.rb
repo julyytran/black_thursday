@@ -4,8 +4,7 @@ require 'pry'
 class SalesAnalyst
   include Math
 
-  attr_reader :sales_engine, :merchants, :items, :invoices, :average_items,         :average_invoices, :merchant_ids, :merchant_items, :item_count, :item_collection,
-  :square_differences, :variance, :stdev, :invoice_count, :invoice_collection, :merchant_invoices, :invoice_square_differences
+  attr_reader :sales_engine, :merchants, :items, :invoices
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
@@ -15,62 +14,76 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant
-    @average_items = items.all.count.to_f / merchants.all.count.to_f
+    items.all.count.to_f / merchants.all.count.to_f
   end
 
-  def find_all_merchant_ids
-    @merchant_ids = merchants.all.map do |merchant|
-      merchant.id
-    end
-  end
-
-  def find_all_merchant_items
-    @merchant_items = merchant_ids.map do |merchant_id|
-      items.find_all_by_merchant_id(merchant_id)
-    end.reject { |element| element.empty?}
-  end
-
-  def count_items
-    @item_count = merchant_items.map do |item_array|
-      merch_id = item_array.first.merchant_id
-      {merch_id => item_array.count}
-    end
-  end
-
-  def collect_item_counts
-    @item_collection = item_count.map do |hash|
-      hash.values
-    end.flatten
-  end
-
-  def collect_square_differences
-    @square_differences = item_collection.map do |number|
-      (number - average_items) ** 2
-    end
-  end
-
-  def variance
-    @variance = square_differences.reduce do |sum, num|
-      (sum + num)
-    end / (square_differences.count-1)
+  def average_invoices_per_merchant
+    average_invoices = invoices.all.count.to_f / merchants.all.count.to_f
+    average_invoices.round(2)
   end
 
   def average_items_per_merchant_standard_deviation
     average_items_per_merchant
     find_all_merchant_ids
-    find_all_merchant_items
-    count_items
-    collect_item_counts
-    collect_square_differences
-    variance
-    @stdev = sqrt(variance)
+    find_merchant(items)
+    count_data(items)
+    collect_data_counts(items)
+    collect_square_differences(items)
+    sqrt(variance(items))
+  end
+
+  def average_invoices_per_merchant_standard_deviation
+    average_invoices_per_merchant
+    find_all_merchant_ids
+    find_merchant(invoices)
+    count_data(invoices)
+    collect_data_counts(invoices)
+    collect_square_differences(invoices)
+    sqrt(variance(invoices)).round(2)
+  end
+
+  def find_all_merchant_ids
+    merchants.all.map do |merchant|
+      merchant.id
+    end
+  end
+
+  def find_merchant(data)
+    find_all_merchant_ids.map do |merchant_id|
+      data.find_all_by_merchant_id(merchant_id)
+    end.reject { |element| element.empty?}
+  end
+
+  def count_data(data)
+    find_merchant(data).map do |data_array|
+      merch_id = data_array.first.merchant_id
+      { id => data_array.count }
+    end
+  end
+
+  def collect_data_counts(data)
+    count_data(data).map do |hash|
+      hash.values
+    end.flatten
+  end
+
+  def collect_square_differences(data)
+    collect_data_counts(data).map do |number|
+      (number - average_items_per_merchant) ** 2
+    end
+  end
+
+  def variance(data)
+    collect_square_differences(data).reduce do |sum, num|
+      (sum + num)
+    end / (collect_square_differences(data).count-1)
   end
 
   def merchants_with_low_item_count
-    average_items_per_merchant_standard_deviation
-    lower_bound = (average_items-stdev)
+    stdev = average_items_per_merchant_standard_deviation
+    lower_bound = (average_items_per_merchant-stdev)
 
-    low_merch_item_pairs = item_count.select {|hash| hash.values[0].to_i < lower_bound}
+    low_merch_item_pairs = count_data(items).select {|hash| hash.values[0].to_i < lower_bound}
 
     low_item_merch_ids = low_merch_item_pairs.map do |pair|
       pair.keys
@@ -97,10 +110,10 @@ class SalesAnalyst
 
   def average_average_price_per_merchant
     find_all_merchant_ids
-    find_all_merchant_items
-    count_items
+    find_merchant(items)
+    count_data(items)
 
-    merch_ids_with_items = item_count.map do |hash|
+    merch_ids_with_items = count_data(items).map do |hash|
         hash.keys
       end.flatten
 
@@ -140,52 +153,8 @@ class SalesAnalyst
     end
   end
 
-  def average_invoices_per_merchant
-    @average_invoices = invoices.all.count.to_f / merchants.all.count.to_f
-    average_invoices.round(2)
-  end
 
-  def find_all_merchant_invoices
-    @merchant_invoices = merchant_ids.map do |merchant_id|
-      invoices.find_all_by_merchant_id(merchant_id)
-    end.reject { |element| element.empty?}
-  end
 
-  def count_invoices
-    @invoice_count = merchant_invoices.map do |item_array|
-      merch_id = item_array.first.merchant_id
-      {merch_id => item_array.count}
-    end
-  end
-
-  def collect_invoice_counts
-    @invoice_collection = invoice_count.map do |hash|
-      hash.values
-    end.flatten
-  end
-
-  def collect_invoice_square_differences
-    @invoice_square_differences = invoice_collection.map do |number|
-      (number - average_invoices) ** 2
-    end
-  end
-
-  def invoice_variance
-    @invoice_variance = invoice_square_differences.reduce do |sum, num|
-      (sum + num)
-    end / (invoice_square_differences.count-1)
-  end
-
-  def average_invoices_per_merchant_standard_deviation
-    average_invoices_per_merchant
-    find_all_merchant_ids
-    find_all_merchant_invoices
-    count_invoices
-    collect_invoice_counts
-    collect_invoice_square_differences
-    invoice_variance
-    @invoice_stdev = sqrt(invoice_variance).round(2)
-  end
 
   def top_merchants_by_invoice_count  #=> [merchant, merchant, merchant]
       # Which merchants are more than two standard deviations above the mean?
@@ -203,3 +172,37 @@ class SalesAnalyst
       # What percentage of invoices are "shipped" vs "pending"?
   end
 end
+
+#
+#
+# def find_all_merchant_invoices
+#   find_all_merchant_ids.map do |merchant_id|
+#     invoices.find_all_by_merchant_id(merchant_id)
+#   end.reject { |element| element.empty?}
+# end
+#
+# def count_invoices
+#   find_all_merchant_invoices.map do |item_array|
+#     merch_id = item_array.first.merchant_id
+#     {merch_id => item_array.count}
+#   end
+# end
+#
+# def collect_invoice_counts
+#   count_invoices.map do |hash|
+#     hash.values
+#   end.flatten
+# end
+#
+# def collect_invoice_square_differences
+#   collect_invoice_counts.map do |number|
+#     (number - average_invoices_per_merchant) ** 2
+#   end
+# end
+#
+# def invoice_variance
+#   square_differences = collect_invoice_square_differences
+#   square_differences.reduce do |sum, num|
+#     (sum + num)
+#   end / (square_differences.count-1)
+# end
