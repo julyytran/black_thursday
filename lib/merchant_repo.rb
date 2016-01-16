@@ -22,7 +22,7 @@ class MerchantRepository
     all.detect { |merchant| merchant.name.downcase == name.downcase }
   end
 
-  def all_by_name(descript)
+  def find_all_by_name(descript)
     all.select { |merchant| merchant.name.downcase.include?(descript.downcase) }
   end
 end

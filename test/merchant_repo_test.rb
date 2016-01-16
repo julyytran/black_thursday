@@ -44,13 +44,13 @@ class MerchantRepositoryTest < Minitest::Test
   end
 
   def test_returns_empty_array_when_name_not_found
-    merchant1 = mr.all_by_name("Turing")
+    merchant1 = mr.find_all_by_name("Turing")
 
     assert_equal [], merchant1
   end
 
   def test_returns_all_matches_of_merchant_with_name_fragment
-    merchant1 = mr.all_by_name("m")
+    merchant1 = mr.find_all_by_name("m")
 
     assert_equal "MiniatureBikez", merchant1[0].name
   end
