@@ -1,5 +1,7 @@
 require_relative 'sales_engine'
+
 class Invoice
+
   attr_reader :data
 
   def initialize(data)
@@ -35,4 +37,5 @@ class Invoice
     se = SalesEngine.merchants
     se.find_by_id(merchant_id)
   end
+
 end

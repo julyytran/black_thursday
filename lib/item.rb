@@ -1,6 +1,7 @@
 require_relative 'sales_engine'
 
 class Item
+
   attr_reader :data
 
   def initialize(data)

@@ -1,4 +1,5 @@
 class Merchant
+
   attr_reader :data
 
   def initialize(data)
@@ -32,4 +33,5 @@ class Merchant
     invoices = SalesEngine.invoices
     invoices.find_all_by_merchant_id(merchant_id)
   end
+
 end
