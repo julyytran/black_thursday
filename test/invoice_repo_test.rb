@@ -7,7 +7,7 @@ class InvoiceRepositoryTest < Minitest::Test
   attr_reader :ir
 
   def setup
-    @ir = InvoiceRepository.new("./data/invoices.csv")
+    @ir = InvoiceRepository.new("./data/fixtures/invoices.csv")
   end
 
   def test_returns_an_array_of_all_invoice_items
@@ -35,10 +35,9 @@ class InvoiceRepositoryTest < Minitest::Test
   end
 
   def test_returns_all_invoices_with_matching_merchant_id
-    invoice = ir.find_all_by_merchant_id("12334839")
+    invoice = ir.find_all_by_merchant_id("12334112")
 
-    assert_equal "12334839", invoice[0].merchant_id
-    assert_equal "12334839", invoice[1].merchant_id
+    assert_equal "12334112", invoice[0].merchant_id
   end
 
   def test_returns_status_of_invoice

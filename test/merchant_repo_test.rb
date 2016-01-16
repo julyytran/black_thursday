@@ -7,7 +7,7 @@ class MerchantRepositoryTest < Minitest::Test
   attr_reader :mr
 
   def setup
-    @mr = MerchantRepository.new("./data/merchants.csv")
+    @mr = MerchantRepository.new("./data/fixtures/merchants.csv")
   end
 
   def test_merchant_array_is_filled_with_merchants

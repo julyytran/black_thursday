@@ -8,9 +8,9 @@ class SalesEngineTest < Minitest::Test
 
   def setup
     @se = SalesEngine.from_csv({
-      :items    => './data/items.csv',
-      :merchants => './data/merchants.csv',
-      :invoices => './data/invoices.csv'})
+      :items    => './data/fixtures/items.csv',
+      :merchants => './data/fixtures/merchants.csv',
+      :invoices => './data/fixtures/invoices.csv'})
     @mr = @se.merchants
     @ir = @se.items
     @iv = @se.invoices
@@ -37,13 +37,13 @@ class SalesEngineTest < Minitest::Test
     merchant = mr.find_by_id("12334105")
     merchant_items = merchant.items
 
-    assert_equal 3, merchant_items.count
+    assert_equal 4, merchant_items.count
     end
 
   def test_returns_merchant_that_match_item_id
     item = ir.find_by_id("263395237")
 
-    assert_equal '12334141', item.merchant.id
+    assert_equal "12334105", item.merchant.id
   end
 
   def test_returns_invoice_that_match_invoice_id
@@ -53,18 +53,18 @@ class SalesEngineTest < Minitest::Test
   end
 
   def test_returns_all_invoices_that_match_merchant_id
-    merchant = mr.find_by_id("12334176")
+    merchant = mr.find_by_id("12334105")
     merchant_invoices = merchant.invoices
 
-    assert_equal 21, merchant_invoices.count
-    assert_equal "155", merchant_invoices[0].id
+    assert_equal 11, merchant_invoices.count
+    assert_equal "1", merchant_invoices[0].id
   end
 
   def test_returns_merchant_that_matches_invoice_merchant_id
-    invoice = iv.find_by_id('155')
+    invoice = iv.find_by_id('1')
     merchant = invoice.merchant_id
 
-    assert_equal "12334176", merchant
+    assert_equal "12334105", merchant
   end
 
 end
