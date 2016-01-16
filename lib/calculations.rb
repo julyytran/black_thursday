@@ -14,6 +14,11 @@ module Calculations
     sqrt(variance(objects)).round(2)
   end
 
+  def two_stdevs
+    stdev = average_invoices_per_merchant_standard_deviation
+    stdev * 2
+  end
+
   def find_all_merchant_ids
     merchants.all.map { |merchant| merchant.id }
   end

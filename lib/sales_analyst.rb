@@ -45,11 +45,8 @@ class SalesAnalyst
 
   def average_item_price_for_merchant(merch_id)
     merchs_items = items.all.select { |item| item.merchant_id == merch_id }
-
     item_prices = merchs_items.map { |item| item.unit_price }
-
     result = item_prices.reduce { |sum, num| (sum + num) }
-
     result/(item_prices.count)
   end
 
@@ -65,7 +62,6 @@ class SalesAnalyst
     end
 
     result = avg_prices_for_each_merch.reduce { |sum, num| (sum + num) }
-
     result/(avg_prices_for_each_merch.count)
   end
 
@@ -91,19 +87,61 @@ class SalesAnalyst
     golden = items.all.select { |item| item.unit_price >= upper_bound }
   end
 
-  def top_merchants_by_invoice_count  #=> [merchant, merchant, merchant]
-      # Which merchants are more than two standard deviations above the mean?
+  def top_merchants_by_invoice_count
+    threshold = average_invoices_per_merchant + two_stdevs
+    invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
+    most = invoices_by_merch.select { |group| group.length > threshold}
+    top_merchs_ids = most.map { |group| group[0].merchant_id }
+    top_merchs = top_merchs_ids.map { |id| merchants.find_by_id(id)}
   end
 
-  def bottom_merchants_by_invoice_count # => [merchant, merchant, merchant]
-    # Which merchants are more than two standard deviations below the mean?
+  def bottom_merchants_by_invoice_count
+    threshold = average_invoices_per_merchant - two_stdevs
+    invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
+    least = invoices_by_merch.select { |group| group.length < threshold}
+    bottom_merchs_ids = least.map { |group| group[0].merchant_id }
+    bottom_merchs = bottom_merchs_ids.map { |id| merchants.find_by_id(id)}
   end
 
-  def top_days_by_invoice_count # => ["Sunday", "Saturday"]
+  def top_days_by_invoice_count
+    avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
 
+    invoices_each_day = invoices.all.group_by do |invoice|
+      invoice.created_at.strftime("%A")
+    end
+
+    invoices_a_day = invoices_each_day.values
+    days = invoices_each_day.keys
+
+    invoice_counts = invoices_a_day.map { |invoice_group| invoice_group.count}
+    days_and_invoice_counts = invoice_counts.zip(days).to_h
+
+    square_differences = invoice_counts.map do |number|
+      (number - avg_invoices_per_day) ** 2
+    end
+
+    variance = square_differences.reduce do |sum, num|
+      (sum + num)
+    end / (square_differences.count-1)
+
+    stdev = sqrt(variance)
+
+    threshold = avg_invoices_per_day + stdev
+
+    matching_invoice_counts = invoice_counts.select do |number|
+      number > threshold
+    end
+
+    top_days = matching_invoice_counts.map do |number|
+      days_and_invoice_counts[number]
+    end
   end
 
-  def invoice_status(status)
-      # What percentage of invoices are "shipped" vs "pending"?
+  def invoice_status(shipping_status)
+      invoices_by_status = invoices.all.group_by { |invoice| invoice.status }
+      status_count = invoices_by_status[shipping_status.to_s].count
+      percent_status = ((status_count.to_f * 100.0) / invoices.all.count.to_f)
+      percent_status.round(2)
   end
+
 end
