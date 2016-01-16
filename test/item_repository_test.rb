@@ -7,7 +7,7 @@ class ItemRepositoryTest < Minitest::Test
   attr_reader :ir
 
   def setup
-    @ir = ItemRepository.new("./data/items.csv")
+    @ir = ItemRepository.new("./data/fixtures/items.csv")
   end
 
   def test_item_repo_is_filled_with_items
@@ -88,7 +88,7 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_item_with_matching_merchant_id
-    items = ir.find_all_by_merchant_id("12334185")
+    items = ir.find_all_by_merchant_id("12334112")
 
     refute items.empty?
   end
