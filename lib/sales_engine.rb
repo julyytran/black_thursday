@@ -23,4 +23,5 @@ class SalesEngine
  def self.invoices
    InvoiceRepository.new(@data[:invoices])
  end
+
 end

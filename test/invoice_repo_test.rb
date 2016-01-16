@@ -3,16 +3,17 @@ require 'minitest/pride'
 require_relative '../lib/invoice_repository'
 
 class InvoiceRepositoryTest < Minitest::Test
+
   attr_reader :ir
 
   def setup
-    @ir = InvoiceRepository.new("./data/fixtures/invoices.csv")
+    @ir = InvoiceRepository.new("./data/invoices.csv")
   end
 
   def test_returns_an_array_of_all_invoice_items
     refute ir.all.empty?
 
-    assert_equal "12335938", ir.all[0].merchant_id
+    assert_equal Invoice, ir.all[0].class
   end
 
   def test_returns_item_id
@@ -49,4 +50,5 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_equal "shipped", invoice_1[0].status
     assert_equal "shipped", invoice_1[1].status
   end
+
 end

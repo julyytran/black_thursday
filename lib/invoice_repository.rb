@@ -1,36 +1,29 @@
 require 'csv'
 require_relative 'invoice'
 
-
 class InvoiceRepository
+
   attr_reader :all
 
-  def initialize(file_path = nil)
-    content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
+  def initialize(file = nil)
+    content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
     @all = content.map { |row| Invoice.new(row.to_h) }
   end
 
   def find_by_id(id)
-    all.detect do |invoice|
-      invoice.id == id
-    end
+    all.detect { |invoice| invoice.id == id }
   end
 
   def find_all_by_customer_id(customer_id)
-    all.select do |invoice|
-      invoice.customer_id == customer_id
-    end
+    all.select { |invoice| invoice.customer_id == customer_id }
   end
 
   def find_all_by_merchant_id(merchant_id)
-    all.select do |invoice|
-      invoice.merchant_id == merchant_id
-    end
+    all.select { |invoice| invoice.merchant_id == merchant_id }
   end
 
   def find_all_by_status(status)
-    all.select do |invoice|
-      invoice.status == status
-    end
+    all.select { |invoice| invoice.status == status }
   end
+
 end
