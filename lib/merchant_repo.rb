@@ -4,6 +4,10 @@ require_relative 'merchant'
 class MerchantRepository
   attr_reader :all
 
+  def inspect
+    "#<#{self.class} #{@merchants.size} rows>"
+  end
+
   def initialize(file_path = nil)
     content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.to_a.map { |row| Merchant.new(row.to_hash)}
@@ -13,7 +17,7 @@ class MerchantRepository
     all.detect do |merchant|
       merchant.id == id
     end
-  end
+  end.to_s
 
   def find_by_name(name)
     all.detect do |merchant|
@@ -21,7 +25,7 @@ class MerchantRepository
     end
   end
 
-  def all_by_name(description)
+  def find_all_by_name(description)
     all.select do |merchant|
       merchant.name.downcase.include?(description.downcase)
     end

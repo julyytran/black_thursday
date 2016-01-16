@@ -36,12 +36,14 @@ class SalesAnalystTest < Minitest::Test
 
   def test_returns_average_price_per_merchant
     avg = sa.average_average_price_per_merchant
+    
     assert_equal BigDecimal, avg.class
     assert avg.inspect.include?('0.1300984840 2537485582 4682811764 7058823529 41E6')
   end
 
   def test_returns_golden_items
     golden = sa.golden_items
+
     refute golden.empty?
     assert_equal Item, golden[0].class
     assert_equal "263410685", golden[0].id

@@ -5,6 +5,10 @@ require_relative 'item'
 class ItemRepository
   attr_reader :all
 
+  def inspect
+    "#<#{self.class} #{@merchants.size} rows>"
+  end
+
   def initialize(file_path = nil)
     content = CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.to_a.map { |row| Item.new(row.to_hash)}
@@ -14,7 +18,7 @@ class ItemRepository
     all.detect do |x|
       x.id == id
     end
-  end
+  end.to_s
 
   def find_by_name(name)
     all.detect do |x|
@@ -44,5 +48,5 @@ class ItemRepository
     all.select do |x|
       x.merchant_id == id
     end
-  end
+  end.to_i
 end

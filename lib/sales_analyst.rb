@@ -57,13 +57,13 @@ class SalesAnalyst
   def count_data(data)
     find_merchant(data).map do |data_array|
       merch_id = data_array.first.merchant_id
-      { id => data_array.count }
+      { merch_id => data_array.count }
     end
   end
 
   def collect_data_counts(data)
     count_data(data).map do |hash|
-      hash.values
+      hash.valuesls
     end.flatten
   end
 
@@ -83,21 +83,16 @@ class SalesAnalyst
     stdev = average_items_per_merchant_standard_deviation
     lower_bound = (average_items_per_merchant-stdev)
 
-    low_merch_item_pairs = count_data(items).select {|hash| hash.values[0].to_i < lower_bound}
+    low_merch_item_pairs = count_data(items)
+      .select {|hash| hash.values[0].to_i < lower_bound}
 
-    low_item_merch_ids = low_merch_item_pairs.map do |pair|
-      pair.keys
-    end.flatten
+    low_item_merch_ids = low_merch_item_pairs.map { |pair| pair.keys }.flatten
 
-    low_item_merch_ids.map do |id|
-      merchants.find_by_id(id)
-    end
+    low_item_merch_ids.map { |id| merchants.find_by_id(id) }
   end
 
   def average_item_price_for_merchant(merch_id)
-    merchs_items = items.all.select do |item|
-      item.merchant_id == merch_id
-    end
+    merchs_items = items.all.select { |item| item.merchant_id == merch_id }
 
     item_prices = merchs_items.map do |item|
       item.unit_price

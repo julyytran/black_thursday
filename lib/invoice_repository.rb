@@ -5,6 +5,10 @@ require_relative 'invoice'
 class InvoiceRepository
   attr_reader :all
 
+  def inspect
+    "#<#{self.class} #{@merchants.size} rows>"
+  end
+
   def initialize(file_path = nil)
     content ||= CSV.open "#{file_path}", headers: true, header_converters: :symbol
     @all = content.map { |row| Invoice.new(row.to_h) }
@@ -14,7 +18,7 @@ class InvoiceRepository
     all.detect do |invoice|
       invoice.id == id
     end
-  end
+  end.to_i
 
   def find_all_by_customer_id(customer_id)
     all.select do |invoice|
