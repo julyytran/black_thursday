@@ -1,7 +1,9 @@
 require_relative '../lib/sales_engine'
+require_relative '../lib/calculations.rb'
 
 class SalesAnalyst
   include Math
+  include Calculations
 
   attr_reader :sales_engine, :merchants, :items, :invoices
 
@@ -13,66 +15,19 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant
-    average_items = items.all.count.to_f / merchants.all.count.to_f
-    average_items.round(2)
+    average_objects_per_merchant(items)
   end
 
   def average_invoices_per_merchant
-    average_invoices = invoices.all.count.to_f / merchants.all.count.to_f
-    average_invoices.round(2)
+    average_objects_per_merchant(invoices)
   end
 
   def average_items_per_merchant_standard_deviation
-    average_items_per_merchant
-    find_all_merchant_ids
-    find_merchant(items)
-    count_data(items)
-    collect_data_counts(items)
-    collect_square_differences(items)
-    sqrt(variance(items)).round(2)
+    standard_deviation_objects_per_merchant(items)
   end
 
   def average_invoices_per_merchant_standard_deviation
-    average_invoices_per_merchant
-    find_all_merchant_ids
-    find_merchant(invoices)
-    count_data(invoices)
-    collect_data_counts(invoices)
-    collect_square_differences(invoices)
-    sqrt(variance(invoices)).round(2)
-  end
-
-  def find_all_merchant_ids
-    merchants.all.map { |merchant| merchant.id }
-  end
-
-  def find_merchant(data)
-    find_all_merchant_ids.map do |merchant_id|
-      data.find_all_by_merchant_id(merchant_id)
-    end.reject { |element| element.empty?}
-  end
-
-  def count_data(data)
-    find_merchant(data).map do |data_array|
-      merch_id = data_array.first.merchant_id
-      { merch_id => data_array.count }
-    end
-  end
-
-  def collect_data_counts(data)
-    count_data(data).map { |hash| hash.values }.flatten
-  end
-
-  def collect_square_differences(data)
-    collect_data_counts(data).map do |number|
-      (number - average_items_per_merchant) ** 2
-    end
-  end
-
-  def variance(data)
-    collect_square_differences(data).reduce do |sum, num|
-      (sum + num)
-    end / (collect_square_differences(data).count-1)
+    standard_deviation_objects_per_merchant(invoices)
   end
 
   def merchants_with_high_item_count

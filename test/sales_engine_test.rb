@@ -18,53 +18,59 @@ class SalesEngineTest < Minitest::Test
 
   def test_loads_data_into_repositories
     refute mr.all.empty?
+    assert_equal MerchantRepository, mr.class
+
     refute ir.all.empty?
+    assert_equal ItemRepository, ir.class
+
+    refute iv.all.empty?
+    assert_equal InvoiceRepository, iv.class
   end
 
   def test_returns_merchant_id
-    merchant_1 = mr.find_by_id("12334105")
+      merchant_1 = mr.find_by_id("12334105")
 
-    assert_equal "12334105", merchant_1.id
-  end
-
-  def test_returns_item_id
-    item_1 = ir.find_by_id("263395237")
-
-    assert_equal "263395237", item_1.id
-  end
-
-  def test_returns_all_items_that_match_a_merchants_id
-    merchant = mr.find_by_id("12334105")
-    merchant_items = merchant.items
-
-    assert_equal 4, merchant_items.count
+      assert_equal "12334105", merchant_1.id
     end
 
-  def test_returns_merchant_that_match_item_id
-    item = ir.find_by_id("263395237")
+    def test_returns_item_id
+      item_1 = ir.find_by_id("263395237")
 
-    assert_equal "12334105", item.merchant.id
-  end
+      assert_equal "263395237", item_1.id
+    end
 
-  def test_returns_invoice_that_match_invoice_id
-    invoice = iv.find_by_id("1")
+    def test_returns_all_items_that_match_a_merchants_id
+      merchant = mr.find_by_id("12334105")
+      merchant_items = merchant.items
 
-    assert_equal "1", invoice.id
-  end
+      assert_equal 4, merchant_items.count
+      end
 
-  def test_returns_all_invoices_that_match_merchant_id
-    merchant = mr.find_by_id("12334105")
-    merchant_invoices = merchant.invoices
+    def test_returns_merchant_that_match_item_id
+      item = ir.find_by_id("263395237")
 
-    assert_equal 11, merchant_invoices.count
-    assert_equal "1", merchant_invoices[0].id
-  end
+      assert_equal "12334105", item.merchant.id
+    end
 
-  def test_returns_merchant_that_matches_invoice_merchant_id
-    invoice = iv.find_by_id('1')
-    merchant = invoice.merchant_id
+    def test_returns_invoice_that_match_invoice_id
+      invoice = iv.find_by_id("1")
 
-    assert_equal "12334105", merchant
-  end
+      assert_equal "1", invoice.id
+    end
+
+    def test_returns_all_invoices_that_match_merchant_id
+      merchant = mr.find_by_id("12334105")
+      merchant_invoices = merchant.invoices
+
+      assert_equal 11, merchant_invoices.count
+      assert_equal "1", merchant_invoices[0].id
+    end
+
+    def test_returns_merchant_that_matches_invoice_merchant_id
+      invoice = iv.find_by_id('1')
+      merchant = invoice.merchant_id
+
+      assert_equal "12334105", merchant
+    end
 
 end
