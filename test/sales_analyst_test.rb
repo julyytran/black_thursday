@@ -15,7 +15,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_average_items_per_merchant
-    assert_equal 2.88, sa.average_items_per_merchant
+    assert_equal 2.87, sa.average_items_per_merchant
   end
 
   def test_returns_average_items_per_merchant_standard_deviation
@@ -38,11 +38,7 @@ class SalesAnalystTest < Minitest::Test
 
   def test_returns_average_price_per_merchant
     avg = sa.average_average_price_per_merchant
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> f45f471f5439a84f0bb0a04b3148b5e8bb35dee6
     assert_equal BigDecimal, avg.class
     assert avg.inspect.include?('0.3502946974 9513246335 7980673684 2105263157 9E5')
   end
@@ -56,11 +52,11 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_average_invoices_per_merchant
-    assert_equal 10.49, sa.average_invoices_per_merchant
+    assert_equal 10.47, sa.average_invoices_per_merchant
   end
 
   def test_returns_standard_deviation_of_invoices_per_merchant
-    assert_equal 8.3, sa.average_invoices_per_merchant_standard_deviation
+    assert_equal 8.31, sa.average_invoices_per_merchant_standard_deviation
   end
 
 end
