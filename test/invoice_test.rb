@@ -5,7 +5,6 @@ require_relative '../lib/invoice'
 require_relative '../lib/invoice_repository'
 
 class InvoiceTest < Minitest::Test
-
   attr_reader :invoice, :iv, :se
 
   def setup
