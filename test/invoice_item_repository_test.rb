@@ -25,7 +25,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_item_id_returns_matches
-    invoice_items = ir.find_all_by_item_id("263519844")
+    invoice_items = ir.find_all_by_item_id(263519844)
     refute invoice_items.empty?
   end
 
@@ -35,7 +35,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_invoice_id_returns_matches
-    invoice_items = ir.find_all_by_invoice_id("1")
+    invoice_items = ir.find_all_by_invoice_id(1)
     refute invoice_items.empty?
   end
 

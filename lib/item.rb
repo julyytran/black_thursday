@@ -42,7 +42,6 @@ class Item
     Time.parse(data[:updated_at])
   end
 
-
   def merchant
     mi = merchant_id
     merchant = SalesEngine.merchants

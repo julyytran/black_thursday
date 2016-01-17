@@ -6,16 +6,15 @@ class InvoiceItem
   end
 
   def id
-    id = data[:id]
-    id.to_s.to_i
+    id = data[:id].to_s.to_i
   end
 
   def item_id
-    data[:item_id]
+    data[:item_id].to_s.to_i
   end
 
   def invoice_id
-    data[:invoice_id]
+    data[:invoice_id].to_s.to_i
   end
 
   def quantity
@@ -36,11 +35,5 @@ class InvoiceItem
 
   def updated_at
     Time.parse(data[:updated_at])
-  end
-
-  def merchant
-    mi = merchant_id
-    merchant = SalesEngine.merchants
-    merchant.find_by_id(mi)
   end
 end

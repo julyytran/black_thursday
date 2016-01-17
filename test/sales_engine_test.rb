@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative '../lib/sales_engine'
+require 'pry'
 
 class SalesEngineTest < Minitest::Test
 
@@ -63,8 +64,9 @@ class SalesEngineTest < Minitest::Test
 
   def test_returns_merchant_that_match_item_id
     item = ir.find_by_id(263395237)
+    merchant = item.merchant
 
-    assert_equal 12334105, item.merchant.id
+    assert_equal 12334105, merchant.id
   end
 
   def test_returns_invoice_that_match_invoice_id
@@ -81,10 +83,37 @@ class SalesEngineTest < Minitest::Test
     assert_equal 12, merchant_invoices[0].id
   end
 
-  def test_returns_merchant_that_matches_invoice_merchant_id
+  def test_returns_merchant_that_match_invoice_merchant_id
     invoice = iv.find_by_id(1)
-    merchant = invoice.merchant_id
+    merchant = invoice.merchant
 
-    assert_equal 12334105, merchant
+    assert_equal 12334105, merchant.id
+  end
+
+  def test_returns_all_items_that_match_invoice_id
+    invoice = iv.find_by_id(1)
+    result = invoice.items
+
+    assert_equal 1, result[0].invoice_id
+    assert_equal 263519844, result[0].item_id
+    assert_equal 263454779, result[1].item_id
+    assert_equal 263451719, result[2].item_id
+  end
+
+  def test_returns_all_transactions_that_match_invoice_id
+    invoice = iv.find_by_id(1)
+    result = invoice.transactions
+
+    assert_equal 1, result[0].invoice_id
+    assert_equal 1, result[0].id
+    assert_equal "4068631943231473", result[0].credit_card_number
+  end
+
+  def test_returns_customer_the_match_invoice_id
+    invoice = iv.find_by_id(1)
+    result = invoice.customer
+
+    assert_equal "Joey", result.first_name
+    assert_equal "Ondricka", result.last_name
   end
 end

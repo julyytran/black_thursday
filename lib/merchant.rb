@@ -1,3 +1,4 @@
+
 class Merchant
 
   attr_reader :data

@@ -1,5 +1,7 @@
 require "time"
 require_relative 'sales_engine'
+require_relative 'invoice_item_repository'
+require 'pry'
 
 class Invoice
 
@@ -34,8 +36,22 @@ class Invoice
   end
 
   def merchant
-    merchant_id = merchant_id
-    se = SalesEngine.merchants
-    se.find_by_id(merchant_id)
+    merchants = SalesEngine.merchants
+    merchants.find_by_id(merchant_id)
+  end
+
+  def items
+    invoices = SalesEngine.invoice_items
+    invoices.find_all_by_invoice_id(id)
+  end
+
+  def transactions
+    transactions = SalesEngine.transactions
+    transactions.find_all_by_invoice_id(id)
+  end
+
+  def customer
+    customer = SalesEngine.customers
+    customer.find_by_id(customer_id)
   end
 end
