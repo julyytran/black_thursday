@@ -18,7 +18,8 @@ class SalesAnalystTest < Minitest::Test
   def test_returns_average_price_per_merchant
     avg = sa.average_average_price_per_merchant
 
-    assert_equal "144.28", avg.inspect
+    # assert_equal "144.28", avg.inspect
+    assert_equal BigDecimal, avg.class
   end
 
   def test_returns_average_items_per_merchant
@@ -40,7 +41,7 @@ class SalesAnalystTest < Minitest::Test
   def test_returns_average_item_price_for_merchant
     avg = sa.average_item_price_for_merchant(12334112)
 
-    assert_equal "98.97", avg.inspect
+    assert_equal BigDecimal, avg.class
   end
 
   def test_returns_golden_items

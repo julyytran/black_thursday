@@ -48,8 +48,8 @@ class SalesAnalyst
     item_prices = merchs_items.map { |item| item.unit_price }
     result = item_prices.reduce { |sum, num| (sum + num) }
 
-    rounded_result.round(2)
     rounded_result = result/(item_prices.count)/100
+    rounded_result.round(2)
   end
 
   def average_average_price_per_merchant

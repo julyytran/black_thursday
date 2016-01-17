@@ -22,6 +22,7 @@ class CustomerTest < Minitest::Test
   end
 
   def test_returns_date_customer_was_created
+    skip
 
   end
 end
