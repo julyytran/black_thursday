@@ -18,6 +18,10 @@ class CustomerTest < Minitest::Test
   end
 
   def test_returns_customers_last_name
-    
+      assert_equal "Nader", customer.last_name
+  end
+
+  def test_returns_date_customer_was_created
+
   end
 end
