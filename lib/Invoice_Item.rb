@@ -1,4 +1,5 @@
 class InvoiceItem
+  attr_reader :data
 
   def initialize(data)
     @data = data
@@ -15,6 +16,10 @@ class InvoiceItem
 
   def invoice_id
     data[:invoice_id]
+  end
+
+  def quantity
+    data[:quantity]
   end
 
   def unit_price
