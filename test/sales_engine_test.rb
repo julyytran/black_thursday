@@ -116,4 +116,28 @@ class SalesEngineTest < Minitest::Test
     assert_equal "Joey", result.first_name
     assert_equal "Ondricka", result.last_name
   end
+
+  def test_returns_customers_for_select_merchant
+    merchant = mr.find_by_id(12334112)
+    customers = merchant.customers
+
+    refute customers.empty?
+    assert_equal Customer, customers[0].class
+  end
+
+  def test_returns_merchants_for_select_customer
+    customer = cust.find_by_id(2)
+    merchants = customer.merchants
+
+    refute merchants.empty?
+    assert_equal Merchant, merchants[0].class
+  end
+
+  def test_returns_invoice_for_select_transaction
+    transaction = trans.find_by_id(1)
+    invoice = transaction.invoice
+
+    assert_equal Invoice, invoice.class
+  end
+
 end

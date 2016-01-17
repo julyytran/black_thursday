@@ -1,10 +1,8 @@
 require "time"
 require_relative 'sales_engine'
 require_relative 'invoice_item_repository'
-require 'pry'
 
 class Invoice
-
   attr_reader :data
 
   def initialize(data)
@@ -53,5 +51,4 @@ class Invoice
   def customer
     customer = SalesEngine.customers
     customer.find_by_id(customer_id)
-  end
 end

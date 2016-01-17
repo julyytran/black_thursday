@@ -1,5 +1,5 @@
 require 'time'
-  
+
 class Customer
   attr_reader :data
 
@@ -28,9 +28,9 @@ class Customer
     Time.parse(data[:updated_at])
   end
 
-  def merchant
-    mi = merchant_id
-    merchant = SalesEngine.merchants
-    merchant.find_by_id(mi)
+  def merchants
+    invoices = SalesEngine.invoices
+    cust_invoices = invoices.find_all_by_customer_id(id)
+    cust_invoices.map { |invoice| invoice.merchant}
   end
 end
