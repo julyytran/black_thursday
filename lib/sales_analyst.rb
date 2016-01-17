@@ -43,12 +43,16 @@ class SalesAnalyst
     high_item_merch_ids.map { |id| merchants.find_by_id(id) }
   end
 
-  def average_item_price_for_merchant(merch_id)
+  def average_item_price_for_merchant_in_cents(merch_id)
     merchs_items = items.all.select { |item| item.merchant_id == merch_id }
     item_prices = merchs_items.map { |item| item.unit_price }
     result = item_prices.reduce { |sum, num| (sum + num) }
+    result/(item_prices.count)
+  end
 
-    rounded_result = result/(item_prices.count)/100
+  def average_item_price_for_merchant(merch_id)
+    rounded_result = average_item_price_for_merchant_in_cents(merch_id)
+    rounded_result/100
     rounded_result.round(2)
   end
 
@@ -60,7 +64,7 @@ class SalesAnalyst
     merch_ids_with_items = count_data(items).map { |hash| hash.keys }.flatten
 
     avg_prices_for_each_merch = merch_ids_with_items.map do |merch_id|
-      average_item_price_for_merchant(merch_id)
+      average_item_price_for_merchant_in_cents(merch_id)
     end
 
     result = avg_prices_for_each_merch.reduce { |sum, num| (sum + num) }

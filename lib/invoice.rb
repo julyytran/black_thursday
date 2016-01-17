@@ -1,8 +1,8 @@
 require "time"
 require_relative 'sales_engine'
+require_relative 'invoice_item_repository'
 
 class Invoice
-
   attr_reader :data
 
   def initialize(data)
@@ -34,8 +34,13 @@ class Invoice
   end
 
   def merchant
-    mr = SalesEngine.merchants
-    mr.find_by_id(merchant_id)
+    merchants = SalesEngine.merchants
+    merchants.find_by_id(merchant_id)
+  end
+
+  def items
+    invoices = SalesEngine.invoice_items
+    invoices.find_all_by_invoice_id(id)
   end
 
   def is_paid_in_full?
@@ -52,6 +57,16 @@ class Invoice
   def total
     # returns the total $ amount of the invoice
 
+  end
+
+  def transactions
+    transactions = SalesEngine.transactions
+    transactions.find_all_by_invoice_id(id)
+  end
+
+  def customer
+    customer = SalesEngine.customers
+    customer.find_by_id(customer_id)
   end
 end
 # Failed charges should never be counted in revenue totals or statistics.
