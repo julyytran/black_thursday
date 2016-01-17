@@ -1,4 +1,6 @@
+require 'time'
 class Transaction
+  attr_reader :data
 
   def initialize(data)
     @data = data

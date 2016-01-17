@@ -13,6 +13,12 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal Customer, cr.all[0].class
   end
 
+  def test_returns_nil_if_no_customer_is_found
+    customer = cr.find_by_id(100)
+
+    assert_equal nil, customer
+  end
+
   def test_returns_a_customer_by_searching_for_its_id
     customer = cr.find_by_id(1)
 

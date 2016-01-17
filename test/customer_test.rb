@@ -18,11 +18,15 @@ class CustomerTest < Minitest::Test
   end
 
   def test_returns_customers_last_name
-      assert_equal "Nader", customer.last_name
+    assert_equal "Nader", customer.last_name
   end
 
   def test_returns_date_customer_was_created
-    skip
+    assert_equal "2012-03-27 14:54:10 UTC", customer.created_at.to_s
+  end
+
+  def test_returns_date_customer_was_updated
+    assert_equal "2012-03-27 14:54:10 UTC", customer.updated_at.to_s
 
   end
 end
