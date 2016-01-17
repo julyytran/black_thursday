@@ -1,8 +1,4 @@
-require_relative 'sales_engine'
-
-class Item
-
-  attr_reader :data
+class Transaction
 
   def initialize(data)
     @data = data
@@ -13,25 +9,17 @@ class Item
     id.to_s.to_i
   end
 
-  def merchant_id
-    id = data[:merchant_id]
+  def invoice_id
+    id = data[:invoice_id]
     id.to_s.to_i
   end
 
-  def name
-    data[:name]
+  def credit_card_number
+    data[:credit_card_number]
   end
 
-  def description
-    data[:description]
-  end
-
-  def unit_price
-    BigDecimal.new(data[:unit_price], data[:unit_price].length)
-  end
-
-  def unit_price_to_dollars
-    unit_price.to_f / 100
+  def result
+    data[:result]
   end
 
   def created_at
@@ -41,7 +29,6 @@ class Item
   def updated_at
     Time.parse(data[:updated_at])
   end
-
 
   def merchant
     mi = merchant_id

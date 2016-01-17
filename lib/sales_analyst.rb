@@ -1,4 +1,5 @@
 require_relative '../lib/sales_engine'
+require 'pry'
 
 class SalesAnalyst
   include Math
@@ -80,11 +81,11 @@ class SalesAnalyst
     upper_bound = (average_items_per_merchant + stdev)
 
     high_merch_item_pairs = count_data(items).select do |hash|
-      hash.values[0].to_i < upper_bound
+      hash.values[0].to_i > upper_bound
     end
 
     high_item_merch_ids = high_merch_item_pairs.map { |pair| pair.keys }.flatten
-
+  #
     high_item_merch_ids.map { |id| merchants.find_by_id(id) }
   end
 
@@ -95,7 +96,8 @@ class SalesAnalyst
 
     result = item_prices.reduce { |sum, num| (sum + num) }
 
-    result/(item_prices.count)
+    rounded_result.round(2) 
+    rounded_result = result/(item_prices.count)/100
   end
 
   def average_average_price_per_merchant
@@ -111,7 +113,8 @@ class SalesAnalyst
 
     result = avg_prices_for_each_merch.reduce { |sum, num| (sum + num) }
 
-    result/(avg_prices_for_each_merch.count)
+    rounded_result = result/(avg_prices_for_each_merch.count)
+    rounded_result.round(2)
   end
 
   def golden_items

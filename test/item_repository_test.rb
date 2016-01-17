@@ -3,7 +3,6 @@ require 'minitest/pride'
 require_relative '../lib/item_repository'
 
 class ItemRepositoryTest < Minitest::Test
-
   attr_reader :ir
 
   def setup
@@ -16,13 +15,13 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_item_id
-    item = ir.find_by_id("263395237")
+    item = ir.find_by_id(263395237)
 
-    assert_equal "263395237", item.id
+    assert_equal 263395237, item.id
   end
 
   def test_returns_nil_if_item_id_not_found
-    item = ir.find_by_id("0000000")
+    item = ir.find_by_id(0000000)
 
     assert_equal nil, item
   end
@@ -64,13 +63,14 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_unit_price_of_item
-    items = ir.find_all_by_price("1300")
+    items = ir.find_all_by_price(1300)
 
     refute items.empty?
+    assert_equal 1, items.count
   end
 
   def test_returns_empty_array_when_item_price_not_found
-    items = ir.find_all_by_price("0")
+    items = ir.find_all_by_price(0)
 
     assert_equal [], items
   end
@@ -79,6 +79,7 @@ class ItemRepositoryTest < Minitest::Test
     items = ir.find_all_by_price_in_range(700..4000)
 
     refute items.empty?
+    assert_equal 36, items.count
   end
 
   def test_returns_an_empty_array_when_unit_price_range_not_found
@@ -88,13 +89,13 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_item_with_matching_merchant_id
-    items = ir.find_all_by_merchant_id("12334112")
+    items = ir.find_all_by_merchant_id(12334112)
 
     refute items.empty?
   end
 
   def test_returns_empty_array_when_merchant_id_not_found
-    items = ir.find_all_by_merchant_id("0")
+    items = ir.find_all_by_merchant_id(0)
 
     assert [], items
   end

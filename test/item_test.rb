@@ -45,14 +45,14 @@ class ItemTest < Minitest::Test
   def test_returns_when_item_was_created
     time = item.created_at
 
-    assert_equal DateTime, time.class
-    assert_equal "2016-01-11T20:59:20+00:00", time.to_s
+    assert_equal Time, time.class
+    assert_equal "2016-01-11 20:59:20 UTC", time.to_s
   end
 
   def test_returns_when_item_was_updated
     time = item.updated_at
 
-    assert_equal DateTime, time.class
-    assert_equal "2009-12-09T12:08:04+00:00", time.to_s
+    assert_equal Time, time.class
+    assert_equal "2009-12-09 12:08:04 UTC", time.to_s
   end
 end

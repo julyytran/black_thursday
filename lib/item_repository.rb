@@ -28,11 +28,11 @@ class ItemRepository
   end
 
   def find_all_by_price(price)
-    all.select { |x| x.unit_price.to_i == price.to_i }
+    all.select { |x| x.unit_price == price }
   end
 
   def find_all_by_price_in_range(range)
-    all.select { |x| range.include?(x.unit_price.to_i) }
+    all.select { |x| range.include?(x.unit_price) }
   end
 
   def find_all_by_merchant_id(id)

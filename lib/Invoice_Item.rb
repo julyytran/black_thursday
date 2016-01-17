@@ -1,8 +1,4 @@
-require_relative 'sales_engine'
-
-class Item
-
-  attr_reader :data
+class InvoiceItem
 
   def initialize(data)
     @data = data
@@ -13,17 +9,12 @@ class Item
     id.to_s.to_i
   end
 
-  def merchant_id
-    id = data[:merchant_id]
-    id.to_s.to_i
+  def item_id
+    data[:item_id]
   end
 
-  def name
-    data[:name]
-  end
-
-  def description
-    data[:description]
+  def invoice_id
+    data[:invoice_id]
   end
 
   def unit_price
@@ -41,7 +32,6 @@ class Item
   def updated_at
     Time.parse(data[:updated_at])
   end
-
 
   def merchant
     mi = merchant_id

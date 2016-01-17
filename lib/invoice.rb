@@ -9,15 +9,15 @@ class Invoice
   end
 
   def id
-    data[:id]
+    data[:id].to_s.to_i
   end
 
   def customer_id
-    data[:customer_id]
+    data[:customer_id].to_s.to_i
   end
 
   def merchant_id
-    data[:merchant_id]
+    data[:merchant_id].to_s.to_i
   end
 
   def status
@@ -25,11 +25,11 @@ class Invoice
   end
 
   def created_at
-    DateTime.strptime(data[:created_at], "%F")
+    Time.parse(data[:created_at])
   end
 
   def updated_at
-    DateTime.strptime(data[:updated_at], "%F")
+    Time.parse(data[:updated_at])
   end
 
   def merchant
@@ -37,5 +37,4 @@ class Invoice
     se = SalesEngine.merchants
     se.find_by_id(merchant_id)
   end
-
 end

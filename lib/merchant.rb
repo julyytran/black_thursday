@@ -7,7 +7,8 @@ class Merchant
   end
 
   def id
-    data[:id]
+    id = data[:id]
+    id.to_i
   end
 
   def name
@@ -15,11 +16,11 @@ class Merchant
   end
 
   def created_at
-    DateTime.strptime(data[:created_at], "%F %T")
+    Time.parse(data[:created_at])
   end
 
   def updated_at
-    DateTime.strptime(data[:updated_at], "%F %T")
+    Time.parse(data[:updated_at])
   end
 
   def items

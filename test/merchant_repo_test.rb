@@ -16,13 +16,13 @@ class MerchantRepositoryTest < Minitest::Test
   end
 
   def test_returns_nil_if_merchant_id_is_not_found
-    assert_equal nil, mr.find_by_id("1233")
+    assert_equal nil, mr.find_by_id(1233)
   end
 
   def test_returns_merchant_if_merchant_id_is_found
-    merchant1 = mr.find_by_id("12334105")
+    merchant1 = mr.find_by_id(12334105)
 
-    assert_equal "12334105", merchant1.id
+    assert_equal 12334105, merchant1.id
   end
 
   def test_returns_nil_if_merchant_name_not_found
