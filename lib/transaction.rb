@@ -1,4 +1,5 @@
 require 'time'
+
 class Transaction
   attr_reader :data
 
@@ -32,9 +33,8 @@ class Transaction
     Time.parse(data[:updated_at])
   end
 
-  def merchant
-    mi = merchant_id
-    merchant = SalesEngine.merchants
-    merchant.find_by_id(mi)
+  def invoice
+    invoice_repo = SalesEngine.invoices
+    invoice_repo.find_by_id(invoice_id)
   end
 end

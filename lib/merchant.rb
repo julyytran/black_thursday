@@ -35,4 +35,10 @@ class Merchant
     invoices.find_all_by_merchant_id(merchant_id)
   end
 
+  def customers
+  cust_ids = invoices.map { |invoice| invoice.customer_id}
+  cust_repo = SalesEngine.customers
+  cust_ids.map { |id| cust_repo.find_by_id(id)}
+  end
+
 end

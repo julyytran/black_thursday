@@ -34,8 +34,7 @@ class Invoice
   end
 
   def merchant
-    merchant_id = merchant_id
-    se = SalesEngine.merchants
-    se.find_by_id(merchant_id)
+    mr = SalesEngine.merchants
+    mr.find_by_id(merchant_id)
   end
 end
