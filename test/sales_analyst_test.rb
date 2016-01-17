@@ -67,7 +67,6 @@ class SalesAnalystTest < Minitest::Test
     top_merchants = sa.top_merchants_by_invoice_count
 
     refute top_merchants.empty?
-
     assert_equal Merchant, top_merchants[0].class
     assert_equal 1, top_merchants.count
     assert_equal 29, top_merchants[0].invoices.count
@@ -79,7 +78,6 @@ class SalesAnalystTest < Minitest::Test
     bottom_merchs = sa.bottom_merchants_by_invoice_count
 
     refute bottom_merchs.empty?
-
     assert_equal Merchant, bottom_merchs[0].class
     assert_equal 4, bottom_merchs.count
     assert_equal 7, bottom_merchs[0].invoices.count

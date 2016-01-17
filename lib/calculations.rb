@@ -52,4 +52,32 @@ module Calculations
     end / (collect_square_differences(data).count-1)
   end
 
+  def all_item_prices
+    items.all.map { |item| item.unit_price }
+  end
+
+  def avg_item_price
+    all_item_prices.reduce do |sum, num|
+      (sum + num)
+    end/(all_item_prices.count)
+  end
+
+  def item_sq_diffs
+    all_item_prices.map do |number|
+      (number - avg_item_price) ** 2
+    end
+  end
+
+  def item_variance
+    item_sq_diffs.reduce do |sum, num|
+      (sum + num)
+    end / (item_sq_diffs.count-1)
+  end
+
+  def invoices_each_day
+    invoices.all.group_by do |invoice|
+      invoice.created_at.strftime("%A")
+    end
+  end
+
 end

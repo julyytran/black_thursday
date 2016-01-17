@@ -39,7 +39,6 @@ class SalesAnalyst
     end
 
     high_item_merch_ids = high_merch_item_pairs.map { |pair| pair.keys }.flatten
-
     high_item_merch_ids.map { |id| merchants.find_by_id(id) }
   end
 
@@ -66,24 +65,13 @@ class SalesAnalyst
   end
 
   def golden_items
-    all_item_prices = items.all.map { |item| item.unit_price }
-
-    avg_item_price = all_item_prices.reduce do |sum, num|
-      (sum + num)
-    end/(all_item_prices.count)
-
-    item_sq_diffs = all_item_prices.map do |number|
-      (number - avg_item_price) ** 2
-    end
-
-    item_variance = item_sq_diffs.reduce do |sum, num|
-      (sum + num)
-    end / (item_sq_diffs.count-1)
+    all_item_prices
+    avg_item_price
+    item_sq_diffs
+    item_variance
 
     item_stdev = sqrt(item_variance)
-
     upper_bound = (avg_item_price + (item_stdev*2))
-
     golden = items.all.select { |item| item.unit_price >= upper_bound }
   end
 
@@ -105,27 +93,21 @@ class SalesAnalyst
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-
-    invoices_each_day = invoices.all.group_by do |invoice|
-      invoice.created_at.strftime("%A")
-    end
-
+    invoices_each_day
     invoices_a_day = invoices_each_day.values
     days = invoices_each_day.keys
-
     invoice_counts = invoices_a_day.map { |invoice_group| invoice_group.count}
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
     square_differences = invoice_counts.map do |number|
-      (number - avg_invoices_per_day) ** 2
+        (number - avg_invoices_per_day) ** 2
     end
 
     variance = square_differences.reduce do |sum, num|
-      (sum + num)
-    end / (square_differences.count-1)
+        (sum + num)
+      end / (square_differences.count-1)
 
     stdev = sqrt(variance)
-
     threshold = avg_invoices_per_day + stdev
 
     matching_invoice_counts = invoice_counts.select do |number|
