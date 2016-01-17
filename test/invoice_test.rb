@@ -2,10 +2,11 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'time'
 require_relative '../lib/invoice'
+require_relative '../lib/invoice_repository'
 
 class InvoiceTest < Minitest::Test
 
-  attr_reader :invoice
+  attr_reader :invoice, :iv, :se
 
   def setup
     @invoice = Invoice.new({:id => '1',
@@ -14,6 +15,14 @@ class InvoiceTest < Minitest::Test
                             :status => "PENDING",
                             :created_at => "2001-12-13",
                             :updated_at => "2006-05-02"})
+    @se = SalesEngine.from_csv({
+      :items => "./data/fixtures/items.csv",
+      :merchants => "./data/fixtures/merchants.csv",
+      :invoices => "./data/fixtures/invoices.csv",
+      :invoice_items => "./data/fixtures/invoice_items.csv",
+      :transactions => "./data/fixtures/transactions.csv",
+      :customers => "./data/fixtures/customers.csv"})
+    @iv = se.invoices
   end
 
   def test_returns_invoice_id
@@ -46,4 +55,14 @@ class InvoiceTest < Minitest::Test
     assert invoice.updated_at.to_s.include?("2006-05-02")
   end
 
+  def test_tells_if_invoice_paid_in_full
+    invoice = iv.find_by_id(1)
+
+    assert invoice.is_paid_in_full?
+
+    invoice = iv.find_by_id(9)
+
+    assert_equal 0, invoice.is_paid_in_full?
+    # refute invoice.is_paid_in_full?
+  end
 end

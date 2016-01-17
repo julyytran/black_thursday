@@ -37,4 +37,21 @@ class Invoice
     mr = SalesEngine.merchants
     mr.find_by_id(merchant_id)
   end
+
+  def is_paid_in_full?
+    trans_repo = SalesEngine.transactions
+    paid_trans = trans_repo.successful_transactions
+
+    if paid_trans.each { |trans| trans.invoice_id == id}
+      true
+    else
+      false
+    end
+  end
+
+  def total
+    # returns the total $ amount of the invoice
+
+  end
 end
+# Failed charges should never be counted in revenue totals or statistics.

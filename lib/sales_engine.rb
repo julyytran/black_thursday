@@ -12,6 +12,9 @@ class SalesEngine
    self.items
    self.merchants
    self.invoices
+   self.invoice_items
+   self.transactions
+   self.customers
    self
  end
 

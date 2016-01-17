@@ -28,4 +28,8 @@ class TransactionRepository
   def find_all_by_result(result)
     all.select { |transaction| transaction.result == result}
   end
+
+  def successful_transactions
+    all.select { |transaction| transaction.result == "success"}
+  end
 end
