@@ -1,5 +1,5 @@
 require 'csv'
-require 'invoice_item'
+require_relative 'invoice_item'
 
 class InvoiceItemRepository
   attr_reader :all
@@ -10,7 +10,7 @@ class InvoiceItemRepository
 
   def initialize(file = nil)
     content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
-    @all = content.map { |row| Invoice.new(row.to_h) }
+    @all = content.map { |row| InvoiceItem.new(row.to_h) }
   end
 
   def find_by_id(id)
