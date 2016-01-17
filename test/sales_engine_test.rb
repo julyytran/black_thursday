@@ -18,7 +18,13 @@ class SalesEngineTest < Minitest::Test
 
   def test_loads_data_into_repositories
     refute mr.all.empty?
+    assert_equal MerchantRepository, mr.class
+
     refute ir.all.empty?
+    assert_equal ItemRepository, ir.class
+
+    refute iv.all.empty?
+    assert_equal InvoiceRepository, iv.class
   end
 
   def test_returns_merchant_id
@@ -38,7 +44,7 @@ class SalesEngineTest < Minitest::Test
     merchant_items = merchant.items
 
     assert_equal 4, merchant_items.count
-    end
+  end
 
   def test_returns_merchant_that_match_item_id
     item = ir.find_by_id(263395237)
@@ -66,5 +72,4 @@ class SalesEngineTest < Minitest::Test
 
     assert_equal 12334105, merchant
   end
-
 end
