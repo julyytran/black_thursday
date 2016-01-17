@@ -55,4 +55,9 @@ class MerchantRepositoryTest < Minitest::Test
     assert_equal "MiniatureBikez", merchant1[0].name
   end
 
+  def test_returns_nil_if_merchant_name_not_found
+    merchant1 = mr.all_by_name("ascnoiaergha;")
+
+    assert_equal [], merchant1
+  end
 end
