@@ -39,24 +39,8 @@ class Invoice
   end
 
   def items
-    invoices = SalesEngine.invoice_items
-    invoices.find_all_by_invoice_id(id)
-  end
-
-  def is_paid_in_full?
-    trans_repo = SalesEngine.transactions
-    paid_trans = trans_repo.successful_transactions
-
-    if paid_trans.each { |trans| trans.invoice_id == id}
-      true
-    else
-      false
-    end
-  end
-
-  def total
-    # returns the total $ amount of the invoice
-
+    invoice_items = SalesEngine.invoice_items
+    invoice_items.find_all_by_invoice_id(id)
   end
 
   def transactions
@@ -68,5 +52,26 @@ class Invoice
     customer = SalesEngine.customers
     customer.find_by_id(customer_id)
   end
+
+  def is_paid_in_full?
+    trans_repo = SalesEngine.transactions
+    paid_trans = trans_repo.successful_transactions
+    paid_invoices_ids = paid_trans.map { |trans| trans.invoice_id}
+    if paid_invoices_ids.include?(id)
+      true
+    else
+      false
+    end
+  end
+
+  def total
+    # returns the total $ amount of the invoice
+    subtotals = items.map { |i_item| i_item.unit_price * i_item.quantity }
+    #for each invoice item, multiply unit price by quantity
+    total_bd = subtotals.reduce { |sum, num| (sum + num)}
+    #add up subtotals for each invoice Item
+    total_dollars = total_bd.to_f/100
+    total_dollars.round(2)
+    #turn to dollar amount
+  end
 end
-# Failed charges should never be counted in revenue totals or statistics.

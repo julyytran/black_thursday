@@ -62,7 +62,11 @@ class InvoiceTest < Minitest::Test
 
     invoice = iv.find_by_id(9)
 
-    assert_equal 0, invoice.is_paid_in_full?
-    # refute invoice.is_paid_in_full?
+    refute invoice.is_paid_in_full?
+  end
+
+  def test_returns_total_dollar_amount_of_invoice
+    invoice = iv.find_by_id(4)
+    assert_equal 1964.05, invoice.total
   end
 end

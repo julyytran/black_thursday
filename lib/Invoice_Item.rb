@@ -18,7 +18,7 @@ class InvoiceItem
   end
 
   def quantity
-    data[:quantity]
+    data[:quantity].to_f
   end
 
   def unit_price
