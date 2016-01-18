@@ -104,18 +104,23 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_total_price_of_revenue_for_given_date
-    assert_equal 77473.69, sa.merchant_revenue_by_date('2012-02-26')
+    assert_equal 422243.44, sa.merchant_revenue_by_date('2012-02-26')
     assert_equal 0, sa.merchant_revenue_by_date('2020-02-26')
   end
 
   def test_returns_top_revenue_earners
-    assert_equal [], sa.top_revenue_earners
+    top_three = sa.top_revenue_earners(3) #=> [merchants]
+
+    refute top_three.empty?
+    assert_equal 3, top_three.count
+    assert_equal Merchant, top_three[0].class
   end
 
   def test_returns_top_x_buyers
     top_three = sa.top_buyers(3) #=> [customer, customer, customer]
 
     refute top_three.empty?
+    assert_equal 3, top_three.count
     assert_equal Customer, top_three[0].class
   end
 end

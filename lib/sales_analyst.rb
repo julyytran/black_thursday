@@ -17,6 +17,12 @@ class SalesAnalyst
     @invoice_items = sales_engine.invoice_items
   end
 
+  def successful_invoices
+    successful_transactions = transactions.successful_transactions
+    successsful_invoice_ids = successful_transactions.map {|transaction| transaction.invoice_id}
+    successsful_invoice_ids.map {|id| invoices.find_by_id(id)}
+  end
+
   def average_items_per_merchant
     average_objects_per_merchant(items)
   end
@@ -155,51 +161,35 @@ class SalesAnalyst
     price_by_quantity = item_id.map do |invoice_item|
       invoice_item.unit_price * invoice_item.quantity.to_i
     end
-
     price_by_quantity.reduce(:+).to_f/100
   end
 
-  def top_revenue_earners(x = 20) #=> [merchant, merchant, merchant]
-    successful_transactions = transactions.all.select do |trans|
-      trans.result == "success"
-    end
-
-    transaction_invoice_id = successful_transactions.map do |trans|
-      trans.invoice_id
-    end
-
-    all_transaction_invoice_items = transaction_invoice_id.map do |id|
-      invoice_items.find_all_by_invoice_id(id)
-    end.flatten
-
-    item_id_quantity_price = all_transaction_invoice_items.map do |invoice_item|
-      [invoice_item.invoice_id, invoice_item.quantity, invoice_item.unit_price]
-    end
-
-    item_id_total_price = item_id_quantity_price.map do |element|
-      [element[0], (element[1].to_i * (element[2].to_f/100)).round(2)]
-    end
+  def top_revenue_earners(x = 20)
+    all_invoice_total = successful_invoices.map { |invoice| invoice.total }
+    inv_repo_w_totals = successful_invoices
+    merchant_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.merchant_id}
+    invoice_values = merchant_to_invoices.values
+    merchant_ids = merchant_to_invoices.keys
+    merchant_revenue_subtotals = invoice_values.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
+    total_invoice_price_by_merchant = merchant_revenue_subtotals.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    merchant_totals = merchant_ids.zip(total_invoice_price_by_merchant).to_h
+    high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
+    top_merchants = high_to_low[0,x]
+    top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
-    # all_transaction_invoice_items.map do |invoice_item|
-    #   invoices.find_by_id
 
-    #top selling merchants
-    #for each merchant return their sales
-
-    def top_buyers(x) #=> [customer, customer, customer]
-      #Find the x customers that spent the most $:
-      all_inv_totals = invoices.all.map { |invoice| invoice.total}
-      inv_repo_w_totals = invoices.all
-      customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
-      invoices_by_cust = customer_to_invoices.values
-      cust_ids = customer_to_invoices.keys
-      subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
-      total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
-      cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
-      high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
-      top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
-      top_x_cust_ids.map { |id| custs.find_by_id(id) }
-
+  def top_buyers(x)
+    all_inv_totals = successful_invoices.map { |invoice| invoice.total }
+    inv_repo_w_totals = successful_invoices
+    customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
+    invoices_by_cust = customer_to_invoices.values
+    cust_ids = customer_to_invoices.keys
+    subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
+    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
+    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
+    top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
+    top_x_cust_ids.map { |id| custs.find_by_id(id) }
   end
 end
 
