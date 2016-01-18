@@ -1,7 +1,8 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/unit'
-require 'mocha/mini_test'
+# require 'mocha/mini_test'
+RSpec.configure { |c| c.mock_with :mocha }
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test

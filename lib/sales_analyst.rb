@@ -179,15 +179,14 @@ class SalesAnalyst
   end
 
   def top_buyers(x)
-    all_inv_totals = successful_invoices.map { |invoice| invoice.total }
+    all_inv_totals = successful_invoices.map(&:total)
+      # all_inv_totals = successful_invoices.map { |invoice| invoice.total }
     inv_repo_w_totals = successful_invoices
-    customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
+    customer_to_invoices = inv_repo_w_totals.group_by(&:customer_id)
     invoices_by_cust = customer_to_invoices.values
     cust_ids = customer_to_invoices.keys
     subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
     total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
-    require 'pry'
-    binding.pry
     cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
     high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
     top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
