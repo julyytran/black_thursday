@@ -167,11 +167,14 @@ class SalesAnalyst
   def top_revenue_earners(x = 20)
     all_invoice_total = successful_invoices.map { |invoice| invoice.total }
     inv_repo_w_totals = successful_invoices
-    merchant_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.merchant_id}
+    merchant_to_invoices = inv_repo_w_totals.group_by { |invoice|
+      invoice.merchant_id}
     invoice_values = merchant_to_invoices.values
     merchant_ids = merchant_to_invoices.keys
-    merchant_revenue_subtotals = invoice_values.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
-    total_invoice_price_by_merchant = merchant_revenue_subtotals.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    merchant_revenue_subtotals = invoice_values.map { |invoice_group|
+      invoice_group.map { |invoice| invoice.total } }
+    merchant_invoice_totals = merchant_revenue_subtotals.map { |subtotal_group|
+      subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
     merchant_totals = merchant_ids.zip(total_invoice_price_by_merchant).to_h
     high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
     top_merchants = high_to_low[0,x]
@@ -191,6 +194,15 @@ class SalesAnalyst
     top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
     top_x_cust_ids.map { |id| custs.find_by_id(id) }
   end
+
+  def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
+
+    #iterate over all invoices and collect its invoice id
+    #iterate over trnsactions and find each transaction with matching invoice id
+    #if one
+  end
+
+
 end
 
 

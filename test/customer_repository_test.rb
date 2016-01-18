@@ -31,16 +31,36 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal "Casimer", customers[0].first_name
   end
 
+  def test_returns_empty_array_if_customers_first_name_not_found
+    customers_2 = cr.find_all_by_first_name("Mcdonalds")
+
+    assert_equal [], customers_2
+  end
+
   def test_returns_all_customers_with_matching_substring_fragment_last_name
     customers = cr.find_all_by_first_name("Cas")
+    customers_2 = cr.find_all_by_first_name("Mcd")
 
     assert_equal "Casimer", customers[0].first_name
+    assert_equal [], customers_2
+  end
+
+  def test_returns_empty_array_if_customers_last_name_last_name_not_found
+    customers_2 = cr.find_all_by_first_name("Mcd")
+
+    assert_equal [], customers_2
   end
 
   def test_returns_all_customers_with_matching_last_name
     customers = cr.find_all_by_last_name("Hettinger")
 
     assert_equal "Hettinger", customers[0].last_name
+  end
+
+  def test_returns_empty_array_if_customers_with_last_name_not_found
+    customers = cr.find_all_by_last_name("Lastname")
+
+    assert_equal [], customers
   end
 
   def test_returns_all_customers_with_matching_substring_fragment_of_last_name

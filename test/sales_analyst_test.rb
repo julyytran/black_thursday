@@ -123,4 +123,8 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 3, top_three.count
     assert_equal Customer, top_three[0].class
   end
+
+  def test_returns_all_merchants_with_pending_invoices
+    
+  end
 end
