@@ -54,11 +54,6 @@ class Invoice
     end
   end
 
-  def total
-    # returns the total $ amount of the invoice
-
-  end
-
   def transactions
     transactions = SalesEngine.transactions
     transactions.find_all_by_invoice_id(id)
@@ -69,4 +64,3 @@ class Invoice
     customer.find_by_id(customer_id)
   end
 end
-# Failed charges should never be counted in revenue totals or statistics.

@@ -102,4 +102,13 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 61.47, sa.invoice_status(:shipped)
     assert_equal 8.26, sa.invoice_status(:returned)
   end
+
+  def test_returns_total_price_of_revenue_for_given_date
+    assert_equal 77473.69, sa.merchant_revenue_by_date('2012-02-26')
+    assert_equal 0, sa.merchant_revenue_by_date('2020-02-26')
+  end
+
+  def test_returns_top_revenue_earners
+    assert_equal [], sa.top_revenue_earners
+  end
 end
