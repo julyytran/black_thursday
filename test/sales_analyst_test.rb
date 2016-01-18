@@ -22,8 +22,8 @@ class SalesAnalystTest < Minitest::Test
   def test_returns_average_price_per_merchant
     avg = sa.average_average_price_per_merchant
 
-    # assert_equal "144.28", avg.inspect
     assert_equal BigDecimal, avg.class
+    assert avg.inspect.include?('0.1452579E5')
   end
 
   def test_returns_average_items_per_merchant
@@ -46,6 +46,7 @@ class SalesAnalystTest < Minitest::Test
     avg = sa.average_item_price_for_merchant(12334112)
 
     assert_equal BigDecimal, avg.class
+    assert avg.inspect.include?('0.989738E4')
   end
 
   def test_returns_golden_items
@@ -110,7 +111,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_revenue_earners
-    top_three = sa.top_revenue_earners(3) #=> [merchants]
+    top_three = sa.top_revenue_earners(3)
 
     refute top_three.empty?
     assert_equal 3, top_three.count
@@ -118,7 +119,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_x_buyers
-    top_three = sa.top_buyers(3) #=> [customer, customer, customer]
+    top_three = sa.top_buyers(3)
 
     refute top_three.empty?
     assert_equal 3, top_three.count
