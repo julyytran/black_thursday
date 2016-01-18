@@ -63,7 +63,7 @@ class Invoice
       false
     end
   end
-
+  
   def total
     subtotals = items.map { |i_item| i_item.unit_price * i_item.quantity }
     total_bd = subtotals.reduce { |sum, num| (sum + num)}

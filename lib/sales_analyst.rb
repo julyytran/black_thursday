@@ -5,15 +5,16 @@ class SalesAnalyst
   include Math
   include Calculations
 
-  attr_reader :sales_engine, :merchants, :items, :invoices, :i_items, :custs
+  attr_reader :sales_engine, :merchants, :items, :invoices, :transactions, :invoice_items, :custs
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
     @merchants = sales_engine.merchants
     @items = sales_engine.items
     @invoices = sales_engine.invoices
-    @i_items = sales_engine.invoice_items
     @custs = sales_engine.customers
+    @transactions = sales_engine.transactions
+    @invoice_items = sales_engine.invoice_items
   end
 
   def average_items_per_merchant
@@ -136,18 +137,73 @@ class SalesAnalyst
       percent_status.round(2)
   end
 
-  def top_buyers(x) #=> [customer, customer, customer]
-    #Find the x customers that spent the most $:
-    all_inv_totals = invoices.all.map { |invoice| invoice.total}
-    inv_repo_w_totals = invoices.all
-    customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
-    invoices_by_cust = customer_to_invoices.values
-    cust_ids = customer_to_invoices.keys
-    subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
-    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
-    cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
-    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
-    top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
-    top_x_cust_ids.map { |id| custs.find_by_id(id) }
+  def merchant_revenue_by_date(date)
+    transactions_by_given_date = transactions.all.select do |trans|
+      if trans.created_at.to_s.include?(date)
+        0
+      else
+        trans.created_at.to_s.include?(date) && trans.result == "success"
+      end
+    end
+
+    invoice_id = transactions_by_given_date.map { |trans| trans.invoice_id }
+
+    item_id = invoice_id.map do |id|
+      invoice_items.find_all_by_invoice_id(id)
+    end.flatten
+
+    price_by_quantity = item_id.map do |invoice_item|
+      invoice_item.unit_price * invoice_item.quantity.to_i
+    end
+
+    price_by_quantity.reduce(:+).to_f/100
+  end
+
+  def top_revenue_earners(x = 20) #=> [merchant, merchant, merchant]
+    successful_transactions = transactions.all.select do |trans|
+      trans.result == "success"
+    end
+
+    transaction_invoice_id = successful_transactions.map do |trans|
+      trans.invoice_id
+    end
+
+    all_transaction_invoice_items = transaction_invoice_id.map do |id|
+      invoice_items.find_all_by_invoice_id(id)
+    end.flatten
+
+    item_id_quantity_price = all_transaction_invoice_items.map do |invoice_item|
+      [invoice_item.invoice_id, invoice_item.quantity, invoice_item.unit_price]
+    end
+
+    item_id_total_price = item_id_quantity_price.map do |element|
+      [element[0], (element[1].to_i * (element[2].to_f/100)).round(2)]
+    end
+
+    # all_transaction_invoice_items.map do |invoice_item|
+    #   invoices.find_by_id
+
+    #top selling merchants
+    #for each merchant return their sales
+
+    def top_buyers(x) #=> [customer, customer, customer]
+      #Find the x customers that spent the most $:
+      all_inv_totals = invoices.all.map { |invoice| invoice.total}
+      inv_repo_w_totals = invoices.all
+      customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
+      invoices_by_cust = customer_to_invoices.values
+      cust_ids = customer_to_invoices.keys
+      subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
+      total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+      cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
+      high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
+      top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
+      top_x_cust_ids.map { |id| custs.find_by_id(id) }
+
   end
 end
+
+
+
+#search all successful transactions
+#collect all invoice_item_repo objects that match  invoice_ids from successful transactions
