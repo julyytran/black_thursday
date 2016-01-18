@@ -25,21 +25,19 @@ class Merchant
   end
 
   def items
-    merchant_id = id
     items = SalesEngine.items
-    items.find_all_by_merchant_id(merchant_id)
+    items.find_all_by_merchant_id(id)
   end
 
   def invoices
-    merchant_id = id
     invoices = SalesEngine.invoices
-    invoices.find_all_by_merchant_id(merchant_id)
+    invoices.find_all_by_merchant_id(id)
   end
 
   def customers
-  cust_ids = invoices.map { |invoice| invoice.customer_id}
-  cust_repo = SalesEngine.customers
-  cust_ids.map { |id| cust_repo.find_by_id(id)}
+    cust_ids = invoices.map { |invoice| invoice.customer_id}
+    cust_repo = SalesEngine.customers
+    cust_ids.map { |id| cust_repo.find_by_id(id)}
   end
 
 end

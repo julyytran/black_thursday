@@ -20,7 +20,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_id_returns_nil_if_no_match
-    invoice_items = ir.find_by_id(0000000)
+    invoice_items = ir.find_by_id(11111111111111111)
     assert_equal nil, invoice_items
   end
 
@@ -30,7 +30,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_item_id_returns_empty_if_no_matches
-    invoice_items = ir.find_all_by_item_id(0000000)
+    invoice_items = ir.find_all_by_item_id(11111111111111111)
     assert_equal [], invoice_items
   end
 
@@ -40,7 +40,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_invoice_id_returns_empty_if_no_matches
-    invoice_items = ir.find_all_by_invoice_id(0000000)
+    invoice_items = ir.find_all_by_invoice_id(11111111111111111)
     assert_equal [], invoice_items
   end
 end

@@ -65,13 +65,11 @@ class Invoice
   end
 
   def total
-    # returns the total $ amount of the invoice
     subtotals = items.map { |i_item| i_item.unit_price * i_item.quantity }
-    #for each invoice item, multiply unit price by quantity
     total_bd = subtotals.reduce { |sum, num| (sum + num)}
-    #add up subtotals for each invoice Item
     total_dollars = total_bd.to_f/100
-    total_dollars.round(2)
-    #turn to dollar amount
+    round_total = total_dollars.round(2)
+    data.merge!({:total => round_total})
+    round_total
   end
 end

@@ -1,18 +1,19 @@
 require_relative '../lib/sales_engine'
 require_relative '../lib/calculations.rb'
 
-
 class SalesAnalyst
   include Math
   include Calculations
 
-  attr_reader :sales_engine, :merchants, :items, :invoices
+  attr_reader :sales_engine, :merchants, :items, :invoices, :i_items, :custs
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
     @merchants = sales_engine.merchants
-    @invoices = sales_engine.invoices
     @items = sales_engine.items
+    @invoices = sales_engine.invoices
+    @i_items = sales_engine.invoice_items
+    @custs = sales_engine.customers
   end
 
   def average_items_per_merchant
@@ -133,5 +134,20 @@ class SalesAnalyst
       status_count = invoices_by_status[shipping_status.to_s].count
       percent_status = ((status_count.to_f * 100.0) / invoices.all.count.to_f)
       percent_status.round(2)
+  end
+
+  def top_buyers(x) #=> [customer, customer, customer]
+    #Find the x customers that spent the most $:
+    all_inv_totals = invoices.all.map { |invoice| invoice.total}
+    inv_repo_w_totals = invoices.all
+    customer_to_invoices = inv_repo_w_totals.group_by { |invoice| invoice.customer_id}
+    invoices_by_cust = customer_to_invoices.values
+    cust_ids = customer_to_invoices.keys
+    subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
+    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
+    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
+    top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
+    top_x_cust_ids.map { |id| custs.find_by_id(id) }
   end
 end

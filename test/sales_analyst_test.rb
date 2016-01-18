@@ -102,4 +102,11 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 61.47, sa.invoice_status(:shipped)
     assert_equal 8.26, sa.invoice_status(:returned)
   end
+
+  def test_returns_top_x_buyers
+    top_three = sa.top_buyers(3) #=> [customer, customer, customer]
+
+    refute top_three.empty?
+    assert_equal Customer, top_three[0].class
+  end
 end
