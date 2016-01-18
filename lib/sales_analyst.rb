@@ -179,7 +179,7 @@ class SalesAnalyst
     item_id_total_price = item_id_quantity_price.map do |element|
       [element[0], (element[1].to_i * (element[2].to_f/100)).round(2)]
     end
-
+  end
     # all_transaction_invoice_items.map do |invoice_item|
     #   invoices.find_by_id
 
