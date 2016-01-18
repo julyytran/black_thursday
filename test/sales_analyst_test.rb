@@ -1,7 +1,8 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/unit'
-require 'mocha/mini_test'
+# require 'mocha/mini_test'
+RSpec.configure { |c| c.mock_with :mocha }
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
@@ -109,7 +110,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_revenue_earners
-    skip
     top_three = sa.top_revenue_earners(3) #=> [merchants]
 
     refute top_three.empty?
@@ -118,7 +118,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_x_buyers
-    skip
     top_three = sa.top_buyers(3) #=> [customer, customer, customer]
 
     refute top_three.empty?
