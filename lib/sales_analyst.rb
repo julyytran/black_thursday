@@ -188,9 +188,7 @@ class SalesAnalyst
     invoices_by_cust = customer_to_invoices.values
     cust_ids = customer_to_invoices.keys
     subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
-    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
-    require 'pry'
-    binding.pry
+    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
     cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
     high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
     top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
@@ -198,13 +196,18 @@ class SalesAnalyst
   end
 
   def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
-
-    #iterate over all invoices and collect its invoice id
-    #iterate over trnsactions and find each transaction with matching invoice id
-    #if one
+    failed_transactions = transactions.all.select do |trans|
+      trans.result == 'failed'
+    end
+    invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
+    pending_invoices = invoice_ids.map { |invoice| invoices.find_by_id(invoice) }
+    merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
+    merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
-
+  def merchants_with_only_one_invoice #=> [merchant, merchant, merchant]
+    #iterate over all transactions and collect 
+  end
 end
 
 
