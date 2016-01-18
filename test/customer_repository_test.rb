@@ -4,6 +4,7 @@ require_relative '../lib/customer_repository'
 
 class CustomerRepositoryTest < Minitest::Test
   attr_reader :cr
+
   def setup
     @cr = CustomerRepository.new("./data/fixtures/customers.csv")
   end
@@ -13,13 +14,13 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal Customer, cr.all[0].class
   end
 
-  def test_returns_nil_if_no_customer_is_found
+  def test_returns_nil_if_no_customer_id_is_found
     customer = cr.find_by_id(100)
 
     assert_equal nil, customer
   end
 
-  def test_returns_a_customer_by_searching_for_its_id
+  def test_returns_a_customer_with_matching_id
     customer = cr.find_by_id(1)
 
     assert_equal 1, customer.id
@@ -37,16 +38,14 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal [], customers_2
   end
 
-  def test_returns_all_customers_with_matching_substring_fragment_last_name
+  def test_returns_all_customers_with_matching_fragment_first_name
     customers = cr.find_all_by_first_name("Cas")
-    customers_2 = cr.find_all_by_first_name("Mcd")
 
     assert_equal "Casimer", customers[0].first_name
-    assert_equal [], customers_2
   end
 
-  def test_returns_empty_array_if_customers_last_name_last_name_not_found
-    customers_2 = cr.find_all_by_first_name("Mcd")
+  def test_returns_empty_array_if_customers_last_name_not_found
+    customers_2 = cr.find_all_by_last_name("Mcdzdfg")
 
     assert_equal [], customers_2
   end
@@ -57,13 +56,7 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal "Hettinger", customers[0].last_name
   end
 
-  def test_returns_empty_array_if_customers_with_last_name_not_found
-    customers = cr.find_all_by_last_name("Lastname")
-
-    assert_equal [], customers
-  end
-
-  def test_returns_all_customers_with_matching_substring_fragment_of_last_name
+  def test_returns_all_customers_with_matching_fragment_of_last_name
     customers = cr.find_all_by_last_name("Het")
 
     assert_equal "Hettinger", customers[0].last_name
