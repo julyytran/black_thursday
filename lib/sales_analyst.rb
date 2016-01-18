@@ -5,7 +5,8 @@ class SalesAnalyst
   include Math
   include Calculations
 
-  attr_reader :sales_engine, :merchants, :items, :invoices, :transactions, :invoice_items, :custs
+  attr_reader :sales_engine, :merchants, :items, :invoices, :transactions,
+              :invoice_items, :custs
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
@@ -19,7 +20,7 @@ class SalesAnalyst
 
   def successful_invoices
     successful_transactions = transactions.successful_transactions
-    successsful_invoice_ids = successful_transactions.map {|transaction| transaction.invoice_id}
+    successsful_invoice_ids = successful_transactions.map(&:invoice_id)
     successsful_invoice_ids.map {|id| invoices.find_by_id(id)}
   end
 
@@ -199,7 +200,7 @@ class SalesAnalyst
       trans.result == 'failed'
     end
     invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
-    pending_invoices = invoice_ids.map { |invoice| invoices.find_by_id(invoice) }
+    pending_invoices = invoice_ids.map {|invoice| invoices.find_by_id(invoice)}
     merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
     merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
