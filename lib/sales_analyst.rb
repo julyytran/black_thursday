@@ -189,6 +189,8 @@ class SalesAnalyst
     cust_ids = customer_to_invoices.keys
     subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
     total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    require 'pry'
+    binding.pry
     cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
     high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
     top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
