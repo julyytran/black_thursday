@@ -49,9 +49,9 @@ class SalesEngineTest < Minitest::Test
   end
 
   def test_returns_item_id
-    item_1 = ir.find_by_id(263395237)
+    item_1 = ir.find_by_id(263519844)
 
-    assert_equal 263395237, item_1.id
+    assert_equal 263519844, item_1.id
   end
 
   def test_returns_all_items_that_match_a_merchants_id
@@ -62,7 +62,7 @@ class SalesEngineTest < Minitest::Test
   end
 
   def test_returns_merchant_that_match_item_id
-    item = ir.find_by_id(263395237)
+    item = ir.find_by_id(263519844)
     merchant = item.merchant
 
     assert_equal 12334105, merchant.id
@@ -93,16 +93,17 @@ class SalesEngineTest < Minitest::Test
     invoice = iv.find_by_id(1)
     result = invoice.items
 
-    assert_equal 1, result[0].invoice_id
-    assert_equal 263519844, result[0].item_id
-    assert_equal 263454779, result[1].item_id
-    assert_equal 263451719, result[2].item_id
+    assert Item, result.class
+    assert_equal 263519844, result[0].id
+    assert_equal 263454779, result[1].id
+    assert_equal 263451719, result[2].id
   end
 
   def test_returns_all_transactions_that_match_invoice_id
     invoice = iv.find_by_id(1)
     result = invoice.transactions
 
+    assert Transaction, result.class
     assert_equal 1, result[0].invoice_id
     assert_equal 1, result[0].id
     assert_equal "4068631943231473", result[0].credit_card_number
@@ -112,6 +113,7 @@ class SalesEngineTest < Minitest::Test
     invoice = iv.find_by_id(1)
     result = invoice.customer
 
+    assert Customer, result.class
     assert_equal "Joey", result.first_name
     assert_equal "Ondricka", result.last_name
   end
@@ -122,6 +124,7 @@ class SalesEngineTest < Minitest::Test
 
     refute customers.empty?
     assert_equal Customer, customers[0].class
+    assert_equal "Cecelia", customers[0].first_name
   end
 
   def test_returns_merchants_for_select_customer

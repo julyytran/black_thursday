@@ -40,7 +40,10 @@ class Invoice
 
   def items
     invoice_items = SalesEngine.invoice_items
-    invoice_items.find_all_by_invoice_id(id)
+    items = SalesEngine.items
+    invoice_ids = invoice_items.find_all_by_invoice_id(id)
+    item_ids = invoice_ids.map { |invoice_items| invoice_items.item_id}
+    a = item_ids.map { |item| items.find_by_id(item) }
   end
 
   def transactions
@@ -63,7 +66,7 @@ class Invoice
       false
     end
   end
-  
+
   def total
     subtotals = items.map { |i_item| i_item.unit_price * i_item.quantity }
     total_bd = subtotals.reduce { |sum, num| (sum + num)}
