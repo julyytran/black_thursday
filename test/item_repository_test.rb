@@ -15,9 +15,9 @@ class ItemRepositoryTest < Minitest::Test
   end
 
   def test_returns_item_id
-    item = ir.find_by_id(263395237)
+    item = ir.find_by_id(263519844)
 
-    assert_equal 263395237, item.id
+    assert_equal 263519844, item.id
   end
 
   def test_returns_nil_if_item_id_not_found

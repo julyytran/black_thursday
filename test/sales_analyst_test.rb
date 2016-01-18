@@ -31,7 +31,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_average_items_per_merchant_standard_deviation
-    assert_equal 5.98, sa.average_items_per_merchant_standard_deviation
+    assert_equal 5.92, sa.average_items_per_merchant_standard_deviation
   end
 
   def test_returns_merchants_with_high_item_count
@@ -126,6 +126,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_all_merchants_with_pending_invoices
-    
+
   end
 end

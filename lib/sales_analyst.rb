@@ -165,17 +165,15 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
-    all_invoice_total = successful_invoices.map { |invoice| invoice.total }
-    inv_repo_w_totals = successful_invoices
-    merchant_to_invoices = inv_repo_w_totals.group_by { |invoice|
-      invoice.merchant_id}
+    all_invoice_total = successful_invoices.map(&:total)
+    merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
     invoice_values = merchant_to_invoices.values
     merchant_ids = merchant_to_invoices.keys
     merchant_revenue_subtotals = invoice_values.map { |invoice_group|
       invoice_group.map { |invoice| invoice.total } }
     merchant_invoice_totals = merchant_revenue_subtotals.map { |subtotal_group|
       subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
-    merchant_totals = merchant_ids.zip(total_invoice_price_by_merchant).to_h
+    merchant_totals = merchant_ids.zip(merchant_invoice_totals).to_h
     high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
     top_merchants = high_to_low[0,x]
     top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
@@ -183,16 +181,16 @@ class SalesAnalyst
 
   def top_buyers(x)
     all_inv_totals = successful_invoices.map(&:total)
-      # all_inv_totals = successful_invoices.map { |invoice| invoice.total }
-    inv_repo_w_totals = successful_invoices
-    customer_to_invoices = inv_repo_w_totals.group_by(&:customer_id)
+    customer_to_invoices = successful_invoices.group_by(&:customer_id)
     invoices_by_cust = customer_to_invoices.values
     cust_ids = customer_to_invoices.keys
-    subtotals_by_cust = invoices_by_cust.map { |invoice_group| invoice_group.map { |invoice| invoice.total}}
-    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group| subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
+    subtotals_by_cust = invoices_by_cust.map { |invoice_group|
+      invoice_group.map { |invoice| invoice.total}}
+    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group|
+      subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
     cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
-    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse
-    top_x_cust_ids = high_to_low.to_a[0..(x-1)].to_h.keys
+    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse.to_h.keys
+    top_x_cust_ids = high_to_low[0,x]
     top_x_cust_ids.map { |id| custs.find_by_id(id) }
   end
 
@@ -202,11 +200,4 @@ class SalesAnalyst
     #iterate over trnsactions and find each transaction with matching invoice id
     #if one
   end
-
-
 end
-
-
-
-#search all successful transactions
-#collect all invoice_item_repo objects that match  invoice_ids from successful transactions

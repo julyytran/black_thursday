@@ -3,7 +3,7 @@ require_relative 'sales_engine'
 require_relative 'invoice_item_repository'
 
 class Invoice
-  attr_reader :data
+  attr_reader :data, :invoice_items
 
   def initialize(data)
     @data = data
@@ -39,7 +39,7 @@ class Invoice
   end
 
   def items
-    invoice_items = SalesEngine.invoice_items
+    @invoice_items = SalesEngine.invoice_items
     items = SalesEngine.items
     invoice_ids = invoice_items.find_all_by_invoice_id(id)
     item_ids = invoice_ids.map { |invoice_items| invoice_items.item_id}
@@ -68,7 +68,10 @@ class Invoice
   end
 
   def total
-    subtotals = items.map { |i_item| i_item.unit_price * i_item.quantity }
+    # require 'pry'
+    # binding.pry
+    items
+    subtotals = invoice_items.all.map { |i_item| i_item.unit_price * i_item.quantity }
     total_bd = subtotals.reduce { |sum, num| (sum + num)}
     total_dollars = total_bd.to_f/100
     round_total = total_dollars.round(2)
