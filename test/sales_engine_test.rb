@@ -141,5 +141,4 @@ class SalesEngineTest < Minitest::Test
 
     assert_equal Invoice, invoice.class
   end
-
 end

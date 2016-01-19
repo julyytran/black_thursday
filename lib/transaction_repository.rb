@@ -5,12 +5,12 @@ class TransactionRepository
   attr_reader :all
 
   def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
+    "#<#{self.class} #{@transactions.size} rows>"
   end
 
   def initialize(file = nil)
     content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
-    @all = content.map { |row| Transaction.new(row.to_h) }
+    @all ||= content.map { |row| Transaction.new(row.to_h) }
   end
 
   def find_by_id(id)
@@ -31,5 +31,9 @@ class TransactionRepository
 
   def successful_transactions
     all.select { |transaction| transaction.result == "success"}
+  end
+
+  def failed_transactions
+    all.select { |transaction| transaction.result == "failed"}
   end
 end

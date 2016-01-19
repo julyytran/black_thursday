@@ -194,17 +194,64 @@ class SalesAnalyst
     top_x_cust_ids.map { |id| custs.find_by_id(id) }
   end
 
-  def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
-    failed_transactions = transactions.all.select do |trans|
-      trans.result == 'failed'
-    end
-    invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
-    pending_invoices = invoice_ids.map { |invoice| invoices.find_by_id(invoice) }
-    merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
-    merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
+  def merchants_with_pending_invoices
+    pending_invoices = invoices.all.select { |invoice|
+      invoice.is_paid_in_full? == false }
+    merchant_ids = pending_invoices.map(&:merchant_id)
+    merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id)}
   end
 
-  def merchants_with_only_one_invoice #=> [merchant, merchant, merchant]
-    #iterate over all transactions and collect
+  def merchants_with_only_one_item
+    count = merchant_item_count
+    merchant_id = merchants.all.map(&:id)
+    merchant_item_count = merchant_id.zip(count)
+    merchant = merchant_item_count.select { |merchant| merchant[1] == 1 }.to_h
+    one_item_merchants = merchant.keys
+    one_item_merchants.map { |merchant| merchants.find_by_id(merchant) }
+  end
+
+  def merchants_with_only_one_item_registered_in_month(month) #=> [merchant, merchant, merchant]
+    merchants =  merchants_with_only_one_item
+
+  end
+
+  def successful_invoices_by_merchant(merchant_id)
+    invoices_by_merchant = successful_invoices.select { |invoice|
+      invoice.merchant_id == merchant_id }
+  end
+
+  def revenue_by_merchant(merchant_id) #=> $
+    invoices_by_merchant = successful_invoices_by_merchant(merchant_id)
+    total_per_invoice = invoices_by_merchant.map { |invoice| invoice.total }
+
+    total_per_invoice.reduce(:+).round(2)
+  end
+
+  def rank_by_most_items_sold(merchant_id)
+    invoices_by_merchant = successful_invoices_by_merchant(merchant_id)
+
+    invoice_ids = invoices_by_merchant.map(&:id)
+
+    invoice_item_ids = invoice_ids.map { |id|
+      invoice_items.find_all_by_invoice_id(id) }.flatten
+
+    item_rank = invoice_item_ids.sort_by { |invoice_item|
+      invoice_item.quantity }.reverse
+
+    top_item = item_rank.select { |invoice_item|
+      invoice_item.quantity == item_rank[0].quantity }
+    top_item.map { |invoice_item| invoice_item.item_id }
+  end
+
+  def most_sold_item_for_merchant(merchant_id) #=> [item, item] (in terms of quantity sold)
+    top_item = rank_by_most_items_sold(merchant_id)
+    top_item.map { |item_id| items.find_by_id(item_id) }
+    # require 'pry'
+    # binding.pry
+
+  end
+
+  def best_item_for_merchant(merchant_id) #=> item (in terms of revenue generated)
+
   end
 end

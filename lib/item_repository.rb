@@ -7,7 +7,7 @@ class ItemRepository
   attr_reader :all
 
   def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
+    "#<#{self.class} #{@items.size} rows>"
   end
 
   def initialize(file = nil)

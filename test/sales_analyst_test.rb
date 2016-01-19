@@ -1,8 +1,9 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/unit'
-# require 'mocha/mini_test'
-RSpec.configure { |c| c.mock_with :mocha }
+require 'mocha/mini_test'
+
+# RSpec.configure { |c| c.mock_with :mocha }
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
@@ -17,6 +18,7 @@ class SalesAnalystTest < Minitest::Test
       :transactions => "./data/fixtures/transactions.csv",
       :customers => "./data/fixtures/customers.csv"})
     @sa = SalesAnalyst.new(se)
+
   end
 
   def test_returns_average_price_per_merchant
@@ -110,7 +112,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_revenue_earners
-    top_three = sa.top_revenue_earners(3) #=> [merchants]
+    top_three = sa.top_revenue_earners(3)
 
     refute top_three.empty?
     assert_equal 3, top_three.count
@@ -118,7 +120,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_top_x_buyers
-    top_three = sa.top_buyers(3) #=> [customer, customer, customer]
+    top_three = sa.top_buyers(3)
 
     refute top_three.empty?
     assert_equal 3, top_three.count
@@ -130,5 +132,33 @@ class SalesAnalystTest < Minitest::Test
 
     assert_equal Merchant, pending[0].class
     assert_equal 6, pending.count
+  end
+
+  def test_returns_all_merchants_with_only_one_item
+    sa.stubs(:merchant_item_count).returns([1, 4, 1, 4, 6, 9, 10, 5, 9])
+    merchants_single_item = sa.merchants_with_only_one_item
+
+    assert_equal Merchant, merchants_single_item[0].class
+    assert_equal 2, merchants_single_item.count
+  end
+
+  def test_returns_empty_array_when_no_merchants_with_one_item
+    sa.stubs(:merchant_item_count).returns([5, 4, 2, 4, 6, 9, 10, 5, 9])
+    merchants_single_item = sa.merchants_with_only_one_item
+
+    assert_equal [], merchants_single_item
+  end
+
+  def test_returns_total_revenue_for_given_merchant
+    total_revenue = sa.revenue_by_merchant(12334105)
+
+    assert_equal 139189.8, total_revenue
+  end
+
+  def test_returns_the_most_sold_item_for_a_given_merchant
+    sa.stubs(:rank_by_most_items_sold).returns([263519844])
+    top_item = sa.most_sold_item_for_merchant(12334105)
+
+    assert_equal Item, top_item[0].class
   end
 end

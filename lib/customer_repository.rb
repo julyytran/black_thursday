@@ -5,7 +5,7 @@ class CustomerRepository
   attr_reader :all
 
   def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
+    "#<#{self.class} #{@customers.size} rows>"
   end
 
   def initialize(file = nil)

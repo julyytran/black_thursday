@@ -39,11 +39,11 @@ class Invoice
   end
 
   def items
-    @invoice_items = SalesEngine.invoice_items
+    invoice_items = SalesEngine.invoice_items
     items = SalesEngine.items
     invoice_ids = invoice_items.find_all_by_invoice_id(id)
     item_ids = invoice_ids.map { |invoice_items| invoice_items.item_id}
-    a = item_ids.map { |item| items.find_by_id(item) }
+    item_ids.map { |item| items.find_by_id(item) }
   end
 
   def transactions
@@ -59,17 +59,29 @@ class Invoice
   def is_paid_in_full?
     trans_repo = SalesEngine.transactions
     paid_trans = trans_repo.successful_transactions
+    unpaid_trans = trans_repo.failed_transactions
     paid_invoices_ids = paid_trans.map { |trans| trans.invoice_id}
+    unpaid_invoices = unpaid_trans.map { |trans| trans.invoice_id }
+
     if paid_invoices_ids.include?(id)
       true
-    else
+    elsif unpaid_invoices.include?(id)
       false
+    end
+  end
+
+  def invoice_items
+    invoice_items = SalesEngine.invoice_items
+    invoices = SalesEngine.invoices
+    invoice = invoices.find_by_id(id)
+    if invoice.is_paid_in_full?
+      invoice_items.find_all_by_invoice_id(id)
     end
   end
 
   def total
     items
-    subtotals = invoice_items.all.map { |i_item| i_item.unit_price * i_item.quantity }
+    subtotals = invoice_items.map { |i_item| i_item.unit_price * i_item.quantity }
     total_bd = subtotals.reduce { |sum, num| (sum + num)}
     total_dollars = total_bd.to_f/100
     round_total = total_dollars.round(2)

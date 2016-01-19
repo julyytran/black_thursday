@@ -80,4 +80,8 @@ module Calculations
     end
   end
 
+  def merchant_item_count
+    item_count = merchants.all.map { |merchant| merchant.items.count }
+  end
+
 end

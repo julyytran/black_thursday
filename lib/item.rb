@@ -43,8 +43,7 @@ class Item
   end
 
   def merchant
-    mi = merchant_id
     merchant = SalesEngine.merchants
-    merchant.find_by_id(mi)
+    merchant.find_by_id(merchant_id)
   end
 end
