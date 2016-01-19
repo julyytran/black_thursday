@@ -39,9 +39,9 @@ class TransactionRepositoryTest < Minitest::Test
   end
 
   def test_returns_all_transactions_with_matching_credit_card_number
-    transaction = tr.find_all_by_credit_card_number("4068631943231473")
+    transaction = tr.find_all_by_credit_card_number(4068631943231473)
 
-    assert_equal "4068631943231473", transaction[0].credit_card_number
+    assert_equal 4068631943231473, transaction[0].credit_card_number
   end
 
   def test_returns_empty_array_if_no_transactions_match_cc_number

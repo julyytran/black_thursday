@@ -52,13 +52,11 @@ class InvoiceRepositoryTest < Minitest::Test
   end
 
   def test_returns_status_of_invoice
-    invoice = ir.find_all_by_status("pending")
+    invoices = ir.find_all_by_status("pending")
     invoice_1 = ir.find_all_by_status("shipped")
 
-    assert_equal "pending", invoice[0].status
-    assert_equal "pending", invoice[1].status
-    assert_equal "shipped", invoice_1[0].status
-    assert_equal "shipped", invoice_1[1].status
+    assert_equal :pending, invoices[0].status
+    assert_equal :shipped, invoice_1[1].status
   end
 
   def test_returns_empty_array_if_no_invoices_match_status

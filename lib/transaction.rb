@@ -18,7 +18,11 @@ class Transaction
   end
 
   def credit_card_number
-    data[:credit_card_number]
+    data[:credit_card_number].to_i
+  end
+
+  def credit_card_expiration_date
+    data[:credit_card_expiration_date]
   end
 
   def result

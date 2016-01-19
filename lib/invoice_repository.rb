@@ -27,7 +27,7 @@ class InvoiceRepository
   end
 
   def find_all_by_status(status)
-    all.select { |invoice| invoice.status == status }
+    all.select { |invoice| invoice.status == status.to_sym }
   end
 
 end

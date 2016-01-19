@@ -37,7 +37,7 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_returns_status
-    assert_equal 'PENDING', invoice.status
+    assert_equal :PENDING, invoice.status
   end
 
   def test_returns_date_invoice_was_creates
@@ -66,6 +66,6 @@ class InvoiceTest < Minitest::Test
 
   def test_returns_total_dollar_amount_of_invoice
     invoice = iv.find_by_id(4)
-    assert_equal 1469368.69, invoice.total
+    assert_equal 1964.05, invoice.total
   end
 end

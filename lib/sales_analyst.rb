@@ -37,7 +37,25 @@ class SalesAnalyst
   end
 
   def average_invoices_per_merchant_standard_deviation
-    standard_deviation_objects_per_merchant(invoices)
+    # standard_deviation_objects_per_merchant(invoices)
+
+    merch_ids = find_all_merchant_ids
+
+    invoices_to_merch = merch_ids.group_by do |merch_id|
+      invoices.find_all_by_merchant_id(merch_id)
+    end
+
+    invoice_groups = invoices_to_merch.keys
+    invoice_count = invoice_groups.map(&:count)
+
+    sq_diffs = invoice_count.map do |number|
+      (number - average_invoices_per_merchant) ** 2
+    end
+
+    sum = sq_diffs.reduce { |sum, num| (sum + num) }
+    var = sum/(sq_diffs.count-1)
+
+    stdev = sqrt(var).round(2)
   end
 
   def merchants_with_high_item_count
@@ -60,9 +78,9 @@ class SalesAnalyst
   end
 
   def average_item_price_for_merchant(merch_id)
-    rounded_result = average_item_price_for_merchant_in_cents(merch_id)
-    rounded_result/100
-    rounded_result.round(2)
+    result = average_item_price_for_merchant_in_cents(merch_id)
+    dollars = result/100
+    dollars.round(2)
   end
 
   def average_average_price_per_merchant
@@ -78,8 +96,9 @@ class SalesAnalyst
 
     result = avg_prices_for_each_merch.reduce { |sum, num| (sum + num) }
 
-    rounded_result = result/(avg_prices_for_each_merch.count)
-    rounded_result.round(2)
+    avg = result/(merchants.all.count)
+    dollars = avg/100
+    dollars.round(2)
   end
 
   def golden_items
@@ -105,8 +124,11 @@ class SalesAnalyst
     threshold = average_invoices_per_merchant - two_stdevs
     invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
     least = invoices_by_merch.select { |group| group.length < threshold}
-    bottom_merchs_ids = least.map { |group| group[0].merchant_id }
+    least_invoices = least.reject { |element| element.empty?}
+    rejected = (least.count - least_invoices.count)
+    bottom_merchs_ids = least_invoices.map { |group| group[0].merchant_id }
     bottom_merchs = bottom_merchs_ids.map { |id| merchants.find_by_id(id)}
+    bottom_merchs << ([] * rejected)
   end
 
   def top_days_by_invoice_count
@@ -139,7 +161,7 @@ class SalesAnalyst
 
   def invoice_status(shipping_status)
       invoices_by_status = invoices.all.group_by { |invoice| invoice.status }
-      status_count = invoices_by_status[shipping_status.to_s].count
+      status_count = invoices_by_status[shipping_status].count
       percent_status = ((status_count.to_f * 100.0) / invoices.all.count.to_f)
       percent_status.round(2)
   end
