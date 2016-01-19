@@ -64,7 +64,8 @@ class Invoice
      unpaid_invoices_ids = unpaid_trans.map { |trans| trans.invoice_id }
      if paid_invoices_ids.include?(id)
        true
-     elsif unpaid_invoices_ids.include?(id)
+     else
+    #  if unpaid_invoices_ids.include?(id)
        false
      end
    end
@@ -85,6 +86,6 @@ class Invoice
      total_dollars = total_bd.to_f/100
      round_total = total_dollars.round(2)
      data.merge!({:total => round_total})
-     round_total
+     total_bd/100
    end
 end
