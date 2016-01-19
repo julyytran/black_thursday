@@ -6,7 +6,7 @@ class Merchant
   def inspect
     "#<#{self.class}"
   end
-  
+
   def initialize(data)
     @data = data
   end

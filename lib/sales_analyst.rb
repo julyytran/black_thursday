@@ -233,7 +233,8 @@ class SalesAnalyst
     one_item_merchants.map { |merchant| merchants.find_by_id(merchant) }
   end
 
-  def merchants_with_only_one_item_registered_in_month(month) #=> [merchant, merchant, merchant]
+  def merchants_with_only_one_item_registered_in_month(month)
+    #=> [merchant, merchant, merchant]
     merchants =  merchants_with_only_one_item
 
   end
@@ -266,7 +267,8 @@ class SalesAnalyst
     top_item.map { |invoice_item| invoice_item.item_id }
   end
 
-  def most_sold_item_for_merchant(merchant_id) #=> [item, item] (in terms of quantity sold)
+  def most_sold_item_for_merchant(merchant_id)
+    #=> [item, item] (in terms of quantity sold)
     top_item = rank_by_most_items_sold(merchant_id)
     top_item.map { |item_id| items.find_by_id(item_id) }
     # require 'pry'
@@ -274,7 +276,8 @@ class SalesAnalyst
 
   end
 
-  def best_item_for_merchant(merchant_id) #=> item (in terms of revenue generated)
+  def best_item_for_merchant(merchant_id)
+    #=> item (in terms of revenue generated)
 
   end
 end

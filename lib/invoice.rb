@@ -85,7 +85,7 @@ class Invoice
 
    def total
      items
-     subtotals = invoice_items.map { |i_item| i_item.unit_price * i_item.quantity }
+     subtotals = invoice_items.map { |ii| ii.unit_price * ii.quantity }
      total_bd = subtotals.reduce { |sum, num| (sum + num)}
      total_dollars = total_bd.to_f/100
      round_total = total_dollars.round(2)
