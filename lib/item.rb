@@ -1,9 +1,12 @@
 require_relative 'sales_engine'
 
 class Item
-
   attr_reader :data
 
+  def inspect
+    "#<#{self.class}"
+  end
+  
   def initialize(data)
     @data = data
   end

@@ -1,9 +1,8 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/unit'
-require 'mocha/mini_test'
-
-# RSpec.configure { |c| c.mock_with :mocha }
+# require 'mocha/mini_test'
+RSpec.configure { |c| c.mock_with :mocha }
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
@@ -24,8 +23,8 @@ class SalesAnalystTest < Minitest::Test
   def test_returns_average_price_per_merchant
     avg = sa.average_average_price_per_merchant
 
-    # assert_equal "144.28", avg.inspect
     assert_equal BigDecimal, avg.class
+    assert avg.inspect.include?('0.14526E3')
   end
 
   def test_returns_average_items_per_merchant
@@ -48,6 +47,7 @@ class SalesAnalystTest < Minitest::Test
     avg = sa.average_item_price_for_merchant(12334112)
 
     assert_equal BigDecimal, avg.class
+    assert avg.inspect.include?('0.9897E2')
   end
 
   def test_returns_golden_items
@@ -63,11 +63,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_standard_deviation_of_invoices_per_merchant
-    assert_equal 6.96, sa.average_invoices_per_merchant_standard_deviation
-  end
-
-  def test_returns_standard_deviation_of_invoices_per_merchant
-    assert_equal 6.96, sa.average_invoices_per_merchant_standard_deviation
+    assert_equal 6.79, sa.average_invoices_per_merchant_standard_deviation
   end
 
   def test_returns_top_merchants_by_invoice_count
@@ -88,9 +84,8 @@ class SalesAnalystTest < Minitest::Test
 
     refute bottom_merchs.empty?
     assert_equal Merchant, bottom_merchs[0].class
-    assert_equal 4, bottom_merchs.count
+    assert_equal 5, bottom_merchs.count
     assert_equal 7, bottom_merchs[0].invoices.count
-    assert_equal 9, bottom_merchs[-1].invoices.count
   end
 
   def test_returns_top_days_by_invoice_count
@@ -131,7 +126,7 @@ class SalesAnalystTest < Minitest::Test
     pending = sa.merchants_with_pending_invoices
 
     assert_equal Merchant, pending[0].class
-    assert_equal 6, pending.count
+    assert_equal 85, pending.count
   end
 
   def test_returns_all_merchants_with_only_one_item

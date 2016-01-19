@@ -106,7 +106,7 @@ class SalesEngineTest < Minitest::Test
     assert Transaction, result.class
     assert_equal 1, result[0].invoice_id
     assert_equal 1, result[0].id
-    assert_equal "4068631943231473", result[0].credit_card_number
+    assert_equal 4068631943231473, result[0].credit_card_number
   end
 
   def test_returns_customer_the_match_invoice_id

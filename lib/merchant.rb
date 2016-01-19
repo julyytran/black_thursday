@@ -3,6 +3,10 @@ class Merchant
 
   attr_reader :data
 
+  def inspect
+    "#<#{self.class}"
+  end
+  
   def initialize(data)
     @data = data
   end
@@ -36,8 +40,9 @@ class Merchant
 
   def customers
     cust_ids = invoices.map { |invoice| invoice.customer_id}
+    uniq_cust_ids = cust_ids.uniq
     cust_repo = SalesEngine.customers
-    cust_ids.map { |id| cust_repo.find_by_id(id)}
+    uniq_cust_ids.map { |id| cust_repo.find_by_id(id)}
   end
 
 end

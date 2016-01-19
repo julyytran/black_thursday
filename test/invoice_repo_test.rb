@@ -10,7 +10,7 @@ class InvoiceRepositoryTest < Minitest::Test
     @ir = InvoiceRepository.new("./data/fixtures/invoices.csv")
   end
 
-  def test_returns_an_array_of_all_invoice_items
+  def test_returns_all_invoice_items
     refute ir.all.empty?
 
     assert_equal Invoice, ir.all[0].class
@@ -24,7 +24,7 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_equal 20, invoice_1.id
   end
 
-  def test_returns_nil_when_no_invoice_with_matching_id
+  def test_returns_nil_when_no_invoices_with_matching_id
     invoice = ir.find_by_id("0")
     assert_equal nil, invoice
   end
@@ -37,11 +37,6 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_equal 1, invoice[1].customer_id
     assert_equal 1, invoice[3].customer_id
     assert_equal 1, invoice[4].customer_id
-  end
-
-  def test_returns_empty_array_if_no_invoice_match_customer_id
-    invoice = ir.find_all_by_customer_id("0")
-    assert_equal [], invoice
   end
 
   def test_returns_all_invoices_with_matching_merchant_id
@@ -57,13 +52,11 @@ class InvoiceRepositoryTest < Minitest::Test
   end
 
   def test_returns_status_of_invoice
-    invoice = ir.find_all_by_status("pending")
+    invoices = ir.find_all_by_status("pending")
     invoice_1 = ir.find_all_by_status("shipped")
 
-    assert_equal "pending", invoice[0].status
-    assert_equal "pending", invoice[1].status
-    assert_equal "shipped", invoice_1[0].status
-    assert_equal "shipped", invoice_1[1].status
+    assert_equal :pending, invoices[0].status
+    assert_equal :shipped, invoice_1[1].status
   end
 
   def test_returns_empty_array_if_no_invoices_match_status

@@ -1,6 +1,10 @@
 class InvoiceItem
   attr_reader :data
 
+  def inspect
+    "#<#{self.class}"
+  end
+  
   def initialize(data)
     @data = data
   end

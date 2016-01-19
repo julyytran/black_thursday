@@ -9,7 +9,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
     @ir = InvoiceItemRepository.new("./data/fixtures/invoice_items.csv")
   end
 
-  def test_all_returns_array_of_invoice_items
+  def test_all_returns_invoice_items
     refute ir.all.empty?
     assert_equal InvoiceItem, ir.all[0].class
   end

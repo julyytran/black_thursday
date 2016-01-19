@@ -18,7 +18,7 @@ class TransactionTest < Minitest::Test
   end
 
   def test_returns_transaction_credit_card_number
-    assert_equal "4068631943231473", transaction.credit_card_number
+    assert_equal 4068631943231473, transaction.credit_card_number
   end
 
   def test_returns_transaction_result
