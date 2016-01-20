@@ -8,14 +8,14 @@ require_relative '../lib/customer_repository'
 class SalesEngine
 
  def self.from_csv(data)
-   @data = data
-   self.items
-   self.merchants
-   self.invoices
-   self.invoice_items
-   self.transactions
-   self.customers
-   self
+  @data = data
+  self.items
+  self.merchants
+  self.invoices
+  self.invoice_items
+  self.transactions
+  self.customers
+  self
  end
 
  def self.items
@@ -23,23 +23,23 @@ class SalesEngine
  end
 
  def self.merchants
-   MerchantRepository.new(@data[:merchants])
+  @merchants ||= MerchantRepository.new(@data[:merchants])
  end
 
 
  def self.invoices
-   InvoiceRepository.new(@data[:invoices])
+  @invoices ||= InvoiceRepository.new(@data[:invoices])
  end
 
  def self.invoice_items
-  InvoiceItemRepository.new(@data[:invoice_items])
+  @invoice_items ||= InvoiceItemRepository.new(@data[:invoice_items])
  end
 
  def self.transactions
-   TransactionRepository.new(@data[:transactions])
+  @transactions ||= TransactionRepository.new(@data[:transactions])
  end
 
  def self.customers
-   CustomerRepository.new(@data[:customers])
+  @customers ||= CustomerRepository.new(@data[:customers])
  end
 end

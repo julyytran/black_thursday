@@ -10,7 +10,7 @@ class TransactionRepository
 
   def initialize(file = nil)
     content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
-    @all = content.map { |row| Transaction.new(row.to_h) }
+    @all ||= content.map { |row| Transaction.new(row.to_h) }
   end
 
   def find_by_id(id)

@@ -3,7 +3,6 @@ require 'bigdecimal'
 require_relative 'item'
 
 class ItemRepository
-
   attr_reader :all
 
   def inspect
@@ -11,8 +10,8 @@ class ItemRepository
   end
 
   def initialize(file = nil)
-    content = CSV.open "#{file}", headers: true, header_converters: :symbol
-    @all = content.to_a.map { |row| Item.new(row.to_hash) }
+    content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
+    @all ||= content.to_a.map { |row| Item.new(row.to_hash) }
   end
 
   def find_by_id(id)
@@ -38,5 +37,4 @@ class ItemRepository
   def find_all_by_merchant_id(id)
     all.select { |x| x.merchant_id == id }
   end
-
 end

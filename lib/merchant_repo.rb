@@ -2,7 +2,6 @@ require 'csv'
 require_relative 'merchant'
 
 class MerchantRepository
-
   attr_reader :all
 
   def inspect
@@ -11,7 +10,7 @@ class MerchantRepository
 
   def initialize(file = nil)
     content ||= CSV.open "#{file}", headers: true, header_converters: :symbol
-    @all = content.to_a.map { |row| Merchant.new(row.to_hash) }
+    @all ||= content.to_a.map { |row| Merchant.new(row.to_hash) }
   end
 
   def find_by_id(id)
