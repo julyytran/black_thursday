@@ -51,6 +51,8 @@ class Invoice
     @paid_invoices_ids ||= SalesEngine.transactions.successful_transactions.map { |trans| trans.invoice_id}
      if paid_invoices_ids.include?(id)
       true
+    else
+      false
      end
    end
 
