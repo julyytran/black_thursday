@@ -114,16 +114,16 @@ class SalesAnalyst
 
   def top_merchants_by_invoice_count
     threshold = average_invoices_per_merchant + two_stdevs
-    invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
-    most = invoices_by_merch.select { |group| group.length > threshold}
-    top_merchs_ids = most.map { |group| group[0].merchant_id }
-    top_merchs = top_merchs_ids.map { |id| merchants.find_by_id(id)}
+    most = merchants.all.select { |merchant| merchant.invoices_count > threshold }
   end
 
   def bottom_merchants_by_invoice_count
     threshold = average_invoices_per_merchant - two_stdevs
     invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
     least = invoices_by_merch.select { |group| group.length < threshold}
+
+    # invoices_by_merch = merchants.all.map {|merchant|}
+
     least_invoices = least.reject { |element| element.empty?}
     rejected = (least.count - least_invoices.count)
     bottom_merchs_ids = least_invoices.map { |group| group[0].merchant_id }
@@ -188,7 +188,7 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
-    all_invoice_total = successful_invoices.map(&:total)
+    # all_invoice_total = successful_invoices.map(&:total)
     merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
     invoice_values = merchant_to_invoices.values
     merchant_ids = merchant_to_invoices.keys
@@ -203,7 +203,7 @@ class SalesAnalyst
   end
 
   def top_buyers(x)
-    all_inv_totals = successful_invoices.map(&:total)
+    # all_inv_totals = successful_invoices.map(&:total)
     customer_to_invoices = successful_invoices.group_by(&:customer_id)
     invoices_by_cust = customer_to_invoices.values
     cust_ids = customer_to_invoices.keys

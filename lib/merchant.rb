@@ -25,20 +25,36 @@ class Merchant
   end
 
   def items
-    items = SalesEngine.items
-    items.find_all_by_merchant_id(id)
+      @items ||= SalesEngine.items.find_all_by_merchant_id(id)
   end
 
   def invoices
-    invoices = SalesEngine.invoices
-    invoices.find_all_by_merchant_id(id)
+    @invoices ||= SalesEngine.invoices.find_all_by_merchant_id(id)
+  end
+
+  def invoices_count
+    invoices.count
   end
 
   def customers
-    cust_ids = invoices.map { |invoice| invoice.customer_id}
-    uniq_cust_ids = cust_ids.uniq
-    cust_repo = SalesEngine.customers
-    uniq_cust_ids.map { |id| cust_repo.find_by_id(id)}
+      @customers ||= invoices.map { |invoice| SalesEngine.customers.find_by_id(invoice.customer_id) }
   end
+  # def items
+  #   items = SalesEngine.items
+  #   items.find_all_by_merchant_id(id)
+  # end
+  #
+  # def invoices
+  #   # invoices = SalesEngine.invoices
+  #   @invoices ||= SalesEngine.invoices.find_all_by_merchant_id(id)
+  # end
+  #
+  # def customers
+  #   @customers ||= invoices.map { |invoice|
+  #     SalesEngine.customers.find_by_id(invoice.customer_id)}.uniq
+  #   # uniq_cust_ids = cust_ids.uniq
+  #   # @customers = SalesEngine.customers
+  #   # uniq_cust_ids.map { |id| cust_repo.find_by_id(id)}
+  # end
 
 end

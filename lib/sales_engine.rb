@@ -19,7 +19,7 @@ class SalesEngine
  end
 
  def self.items
-   ItemRepository.new(@data[:items])
+  @items ||= ItemRepository.new(@data[:items])
  end
 
  def self.merchants
