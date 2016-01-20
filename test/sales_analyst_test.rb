@@ -101,11 +101,12 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_total_price_of_revenue_for_given_date
-    assert_equal 422243.44, sa.merchant_revenue_by_date('2012-02-26')
-    assert_equal 0, sa.merchant_revenue_by_date('2020-02-26')
+    assert_equal 422243.44, sa.total_revenue_by_date('2012-02-26')
+    assert_equal 0, sa.total_revenue_by_date('2020-02-26')
   end
 
   def test_returns_top_revenue_earners
+    skip
     top_three = sa.top_revenue_earners(3)
 
     refute top_three.empty?
@@ -113,18 +114,52 @@ class SalesAnalystTest < Minitest::Test
     assert_equal Merchant, top_three[0].class
   end
 
-  def test_returns_top_x_buyers
-    top_three = sa.top_buyers(3)
-
-    refute top_three.empty?
-    assert_equal 3, top_three.count
-    assert_equal Customer, top_three[0].class
-  end
-
   def test_returns_all_merchants_with_pending_invoices
+    skip
     pending = sa.merchants_with_pending_invoices
 
     assert_equal Merchant, pending[0].class
     assert_equal 6, pending.count
+  end
+
+  def test_returns_merchants_with_only_one_item
+    skip
+    merchants = sa.merchants_with_only_one_item
+
+    refute merchants.empty?
+    assert_equal 0, merchants.count
+    assert_equal Merchant, merchants[0].class
+    assert_equal 1, merchants[0].items_count
+  end
+
+  def test_returns_merchants_with_only_one_item_registered_in_specific_month
+    skip
+    merchants = sa.merchants_with_only_one_item_registered_in_month("July")
+
+    refute merchants.empty?
+    assert_equal 0, merchants.count
+    assert_equal Merchant, merchants[0].class
+    assert_equal 1, merchants[0].items_count
+  end
+
+  def test_returns_revenue_by_merchant_for_given_merchant
+    skip
+    revenue = sa.revenue_by_merchant(12334112)
+
+    assert_equal 0, revenue
+  end
+
+  def test_returns_most_sold_item_for_given_merchant
+    skip
+    item = sa.most_sold_item_for_merchant(12334112)
+
+    assert_equal 0, item.id
+  end
+
+  def test_returns_best_item_for_given_merchant
+    skip
+    item = sa.best_item_for_merchant(12334112)
+
+    assert_equal item, item.id
   end
 end

@@ -123,6 +123,7 @@ class SalesAnalyst
   end
 
   def total_revenue_by_date(date)
+    # => $$
     transactions_by_given_date = transactions.all.select do |trans|
       if trans.created_at.to_s.include?(date.to_s)
         0
@@ -144,6 +145,7 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
+    # => [merchant, merchant, merchant]
     # merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
     # invoice_values = merchant_to_invoices.values
     # merchant_ids = merchant_to_invoices.keys
@@ -174,15 +176,28 @@ class SalesAnalyst
     # merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
-  def merchants_with_only_one_invoice #=> [merchant, merchant, merchant]
-    #iterate over all transactions and collect
-  end
-
-  def merchants_rank_by_revenue
-
-  end
-
   def merchants_with_only_one_item
+    # => [merchant, merchant, merchant]
+
+  end
+
+  def merchants_with_only_one_item_registered_in_month(month)
+    # => [merchant, merchant, merchant]
+
+  end
+
+  def revenue_by_merchant(merchant_id)
+    # => $$
+
+  end
+
+  def most_sold_item_for_merchant(merchant_id)
+  #=> [item] (in terms of quantity sold)
+
+  end
+
+  def best_item_for_merchant(merchant_id)
+    #=> item (in terms of revenue generated)
 
   end
 end
