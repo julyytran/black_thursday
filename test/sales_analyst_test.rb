@@ -83,7 +83,7 @@ class SalesAnalystTest < Minitest::Test
 
     refute bottom_merchs.empty?
     assert_equal Merchant, bottom_merchs[0].class
-    assert_equal 5, bottom_merchs.count
+    assert_equal 4, bottom_merchs.count
     assert_equal 7, bottom_merchs[0].invoices.count
   end
 

@@ -90,35 +90,20 @@ class SalesAnalyst
 
   def bottom_merchants_by_invoice_count
     threshold = average_invoices_per_merchant - two_stdevs
-    invoices_by_merch = merchants.all.map { |merchant| merchant.invoices }
-    least = invoices_by_merch.select { |group| group.length < threshold}
-
-    # invoices_by_merch = merchants.all.map {|merchant|}
-
-    least_invoices = least.reject { |element| element.empty?}
-    rejected = (least.count - least_invoices.count)
-    bottom_merchs_ids = least_invoices.map { |group| group[0].merchant_id }
-    bottom_merchs = bottom_merchs_ids.map { |id| merchants.find_by_id(id)}
-    bottom_merchs << ([] * rejected)
+    least = merchants.all.select { |merchant| merchant.invoices_count < threshold}
   end
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-    invoices_each_day
-    invoices_a_day = invoices_each_day.values
+    invoice_counts = invoices_each_day.values.map { |invoice_group| invoice_group.count}
     days = invoices_each_day.keys
-    invoice_counts = invoices_a_day.map { |invoice_group| invoice_group.count}
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
-    square_differences = invoice_counts.map do |number|
+    sq_diffs = invoice_counts.map do |number|
         (number - avg_invoices_per_day) ** 2
     end
 
-    variance = square_differences.reduce do |sum, num|
-        (sum + num)
-      end / (square_differences.count-1)
-
-    stdev = sqrt(variance)
+    stdev = stdev_from_sq_diffs(sq_diffs)
     threshold = avg_invoices_per_day + stdev
 
     matching_invoice_counts = invoice_counts.select do |number|
@@ -137,12 +122,12 @@ class SalesAnalyst
       percent_status.round(2)
   end
 
-  def merchant_revenue_by_date(date)
+  def total_revenue_by_date(date)
     transactions_by_given_date = transactions.all.select do |trans|
-      if trans.created_at.to_s.include?(date)
+      if trans.created_at.to_s.include?(date.to_s)
         0
       else
-        trans.created_at.to_s.include?(date) && trans.result == "success"
+        trans.created_at.to_s.include?(date.to_s) && trans.result == "success"
       end
     end
 
@@ -159,46 +144,45 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
-    # all_invoice_total = successful_invoices.map(&:total)
-    merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
-    invoice_values = merchant_to_invoices.values
-    merchant_ids = merchant_to_invoices.keys
-    merchant_revenue_subtotals = invoice_values.map { |invoice_group|
+    # merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
+    # invoice_values = merchant_to_invoices.values
+    # merchant_ids = merchant_to_invoices.keys
+    merchant_revenue_subtotals = merchant_invoices.map { |invoice_group|
       invoice_group.map { |invoice| invoice.total } }
+
     merchant_invoice_totals = merchant_revenue_subtotals.map { |subtotal_group|
       subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
+
     merchant_totals = merchant_ids.zip(merchant_invoice_totals).to_h
     high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
     top_merchants = high_to_low[0,x]
     top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
-  def top_buyers(x)
-    # all_inv_totals = successful_invoices.map(&:total)
-    customer_to_invoices = successful_invoices.group_by(&:customer_id)
-    invoices_by_cust = customer_to_invoices.values
-    cust_ids = customer_to_invoices.keys
-    subtotals_by_cust = invoices_by_cust.map { |invoice_group|
-      invoice_group.map { |invoice| invoice.total}}
-    total_invoice_price_by_cust = subtotals_by_cust.map { |subtotal_group|
-      subtotal_group.reduce { |sum, subtotal| (sum + subtotal)}}
-    cust_to_spending = cust_ids.zip(total_invoice_price_by_cust).to_h
-    high_to_low = cust_to_spending.sort_by {|k, v| v}.reverse.to_h.keys
-    top_x_cust_ids = high_to_low[0,x]
-    top_x_cust_ids.map { |id| custs.find_by_id(id) }
-  end
-
   def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
-    failed_transactions = transactions.all.select do |trans|
-      trans.result == 'failed'
-    end
-    invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
-    pending_invoices = invoice_ids.map {|invoice| invoices.find_by_id(invoice)}
-    merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
-    merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
+    pending_invoices = successful_invoices.select { |invoice| invoice.status == :pending}
+    merch_ids = pending_invoices.map { |invoice| invoice.merchant_id }.uniq
+    merchs = merch_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
+
+
+    # failed_transactions = transactions.all.select do |trans|
+    #   trans.result == 'failed'
+    # end
+    # invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
+    # pending_invoices = invoice_ids.map {|invoice| invoices.find_by_id(invoice)}
+    # merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
+    # merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
   def merchants_with_only_one_invoice #=> [merchant, merchant, merchant]
     #iterate over all transactions and collect
+  end
+
+  def merchants_rank_by_revenue
+
+  end
+
+  def merchants_with_only_one_item
+
   end
 end

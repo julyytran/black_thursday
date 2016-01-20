@@ -11,16 +11,12 @@ module Calculations
 
   def merchant_items
     @merchant_items ||= merchants.map(&:item).reject { |element| element.empty?}
-    # do |merchant| merchant.item
-    # merchant_ids.map do |merchant_id|
-    #   items.find_all_by_merchant_id(merchant_id)
-    # end
-    # .reject { |element| element.empty?}
   end
 
-  # def merchant_invoices
-  #   @merchant_invoices ||= merchants.map(&:invoices)
-  # end
+  def merchant_invoices
+    @merchant_invoices ||= merchants.all.map(&:invoices)
+  end
+
   def merchant_item_count
     @merchant_item_count ||= merchants.all.map(&:items_count)
   end
@@ -65,7 +61,7 @@ module Calculations
   end
 
   def invoices_each_day
-    invoices.all.group_by do |invoice|
+    @invoices_each_day ||= invoices.all.group_by do |invoice|
       invoice.created_at.strftime("%A")
     end
   end
