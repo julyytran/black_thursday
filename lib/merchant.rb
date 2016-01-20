@@ -27,6 +27,14 @@ class Merchant
     @items ||= SalesEngine.items.find_all_by_merchant_id(id)
   end
 
+  def items_count
+    items.count
+  end
+
+  def items_prices
+    @items_prices ||= items.map {|item| item.unit_price}
+  end
+
   def invoices
     @invoices ||= SalesEngine.invoices.find_all_by_merchant_id(id)
   end

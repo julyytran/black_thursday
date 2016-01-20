@@ -18,12 +18,6 @@ class SalesAnalyst
     @invoice_items = sales_engine.invoice_items
   end
 
-  def successful_invoices
-    successful_transactions = transactions.successful_transactions
-    successsful_invoice_ids = successful_transactions.map(&:invoice_id)
-    successsful_invoice_ids.map {|id| invoices.find_by_id(id)}
-  end
-
   def average_items_per_merchant
     average_objects_per_merchant(items)
   end
@@ -33,58 +27,37 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant_standard_deviation
-    standard_deviation_objects_per_merchant(items)
+    sq_diffs = merchant_item_count.map do |number|
+      (number - average_items_per_merchant) ** 2
+    end
+    stdev_from_sq_diffs(sq_diffs)
   end
 
   def average_invoices_per_merchant_standard_deviation
-    # standard_deviation_objects_per_merchant(invoices)
-
-    merch_ids = find_all_merchant_ids
-
-    invoices_to_merch = merch_ids.group_by do |merch_id|
-      invoices.find_all_by_merchant_id(merch_id)
-    end
-
-    invoice_groups = invoices_to_merch.keys
-    invoice_count = invoice_groups.map(&:count)
-
-    sq_diffs = invoice_count.map do |number|
+    sq_diffs = merchant_invoice_count.map do |number|
       (number - average_invoices_per_merchant) ** 2
     end
-
-    sum = sq_diffs.reduce { |sum, num| (sum + num) }
-    var = sum/(sq_diffs.count-1)
-
-    stdev = sqrt(var).round(2)
+    stdev_from_sq_diffs(sq_diffs)
   end
 
   def merchants_with_high_item_count
     stdev = average_items_per_merchant_standard_deviation
-    upper_bound = (average_items_per_merchant + stdev)
-
-    high_merch_item_pairs = count_data(items).select do |hash|
-      hash.values[0].to_i > upper_bound
-    end
-
-    high_item_merch_ids = high_merch_item_pairs.map { |pair| pair.keys }.flatten
-    high_item_merch_ids.map { |id| merchants.find_by_id(id) }
-  end
-
-  def average_item_price_for_merchant_in_cents(merch_id)
-    merchs_items = items.all.select { |item| item.merchant_id == merch_id }
-    item_prices = merchs_items.map { |item| item.unit_price }
-    result = item_prices.reduce { |sum, num| (sum + num) }
-    result/(item_prices.count)
+    threshold = (average_items_per_merchant + stdev)
+    merchants.all.select{|merchant| merchant.items_count > threshold}
   end
 
   def average_item_price_for_merchant(merch_id)
-    result = average_item_price_for_merchant_in_cents(merch_id)
-    dollars = result/100
-    dollars.round(2)
+    avg_cents = average_item_price_for_merchant_in_cents(merch_id)
+    dollars = (avg_cents/100).round(2)
+  end
+
+  def average_item_price_for_merchant_in_cents(merch_id)
+    merchant = merchants.find_by_id(merch_id)
+    merchant_total_price = merchant.items_prices.reduce { |sum, num| (sum + num) }
+    @avg_cents = merchant_total_price/(merchant.items_prices.count)
   end
 
   def average_average_price_per_merchant
-    find_all_merchant_ids
     find_merchant(items)
     count_data(items)
 
@@ -105,11 +78,9 @@ class SalesAnalyst
     all_item_prices
     avg_item_price
     item_sq_diffs
-    item_variance
-
-    item_stdev = sqrt(item_variance)
-    upper_bound = (avg_item_price + (item_stdev*2))
-    golden = items.all.select { |item| item.unit_price >= upper_bound }
+    item_stdev = stdev_from_sq_diffs(item_sq_diffs)
+    threshold = (avg_item_price + (item_stdev*2))
+    golden = items.all.select { |item| item.unit_price >= threshold }
   end
 
   def top_merchants_by_invoice_count

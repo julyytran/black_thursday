@@ -1,17 +1,46 @@
+require 'time'
 module Calculations
+
+  def successful_invoices
+    @successful_invoices ||= transactions.successful_transactions.map(&:invoice_id).map {|id| invoices.find_by_id(id)}
+  end
+
+  def merchant_ids
+    @merchant_ids ||= merchants.all.map { |merchant| merchant.id }
+  end
+
+  def merchant_items
+    @merchant_items ||= merchants.map(&:item).reject { |element| element.empty?}
+    # do |merchant| merchant.item
+    # merchant_ids.map do |merchant_id|
+    #   items.find_all_by_merchant_id(merchant_id)
+    # end
+    # .reject { |element| element.empty?}
+  end
+
+  # def merchant_invoices
+  #   @merchant_invoices ||= merchants.map(&:invoices)
+  # end
+  def merchant_item_count
+    @merchant_item_count ||= merchants.all.map(&:items_count)
+  end
+
+  def merchant_invoice_count
+    @merchant_invoice_count ||= merchants.all.map(&:invoices_count)
+  end
+
+  def merchant_items_prices
+    @merchant_items_prices ||= merchants.all.map(&:items_prices)
+  end
 
   def average_objects_per_merchant(objects)
     (objects.all.count.to_f/merchants.all.count.to_f).round(2)
   end
 
-  def standard_deviation_objects_per_merchant(objects)
-    average_objects_per_merchant(objects)
-    find_all_merchant_ids
-    find_merchant(objects)
-    count_data(objects)
-    collect_data_counts(objects)
-    collect_square_differences(objects)
-    sqrt(variance(objects)).round(2)
+  def stdev_from_sq_diffs(sq_diffs)
+    sum = sq_diffs.reduce { |sum, num| (sum + num) }
+    var = sum/(sq_diffs.count-1)
+    stdev = sqrt(var).round(2)
   end
 
   def two_stdevs
@@ -19,59 +48,20 @@ module Calculations
     stdev * 2
   end
 
-  def find_all_merchant_ids
-    merchants.all.map { |merchant| merchant.id }
-  end
-
-  def find_merchant(data)
-    find_all_merchant_ids.map do |merchant_id|
-      data.find_all_by_merchant_id(merchant_id)
-    end.reject { |element| element.empty?}
-  end
-
-  def count_data(data)
-    find_merchant(data).map do |data_array|
-      merch_id = data_array.first.merchant_id
-      { merch_id => data_array.count }
-    end
-  end
-
-  def collect_data_counts(data)
-    count_data(data).map { |hash| hash.values }.flatten
-  end
-
-  def collect_square_differences(data)
-    collect_data_counts(data).map do |number|
-      (number - average_items_per_merchant) ** 2
-    end
-  end
-
-  def variance(data)
-    collect_square_differences(data).reduce do |sum, num|
-      (sum + num)
-    end / (collect_square_differences(data).count-1)
-  end
-
   def all_item_prices
-    items.all.map { |item| item.unit_price }
+    @all_item_prices ||= items.all.map { |item| item.unit_price }
   end
 
   def avg_item_price
-    all_item_prices.reduce do |sum, num|
+    @avg_item_price ||= all_item_prices.reduce do |sum, num|
       (sum + num)
     end/(all_item_prices.count)
   end
 
   def item_sq_diffs
-    all_item_prices.map do |number|
+    @item_sq_diffs ||= all_item_prices.map do |number|
       (number - avg_item_price) ** 2
     end
-  end
-
-  def item_variance
-    item_sq_diffs.reduce do |sum, num|
-      (sum + num)
-    end / (item_sq_diffs.count-1)
   end
 
   def invoices_each_day
@@ -79,5 +69,18 @@ module Calculations
       invoice.created_at.strftime("%A")
     end
   end
+
+  def find_merchant(data)
+      merchant_ids.map do |merchant_id|
+        data.find_all_by_merchant_id(merchant_id)
+      end.reject { |element| element.empty?}
+    end
+
+    def count_data(data)
+      find_merchant(data).map do |data_array|
+        merch_id = data_array.first.merchant_id
+        { merch_id => data_array.count }
+      end
+    end
 
 end
