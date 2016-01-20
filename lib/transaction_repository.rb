@@ -32,8 +32,4 @@ class TransactionRepository
   def successful_transactions
     all.select { |transaction| transaction.result == "success"}
   end
-
-  def failed_transactions
-    all.select { |transaction| transaction.result == "failed"}
-  end
 end

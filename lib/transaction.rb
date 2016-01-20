@@ -1,5 +1,3 @@
-require 'time'
-
 class Transaction
   attr_reader :data
 
@@ -8,13 +6,11 @@ class Transaction
   end
 
   def id
-    id = data[:id]
-    id.to_s.to_i
+    data[:id].to_s.to_i
   end
 
   def invoice_id
-    id = data[:invoice_id]
-    id.to_s.to_i
+    data[:invoice_id].to_s.to_i
   end
 
   def credit_card_number
@@ -38,7 +34,6 @@ class Transaction
   end
 
   def invoice
-    invoice_repo = SalesEngine.invoices
-    invoice_repo.find_by_id(invoice_id)
+    @invoice ||= SalesEngine.invoices.find_by_id(invoice_id)
   end
 end

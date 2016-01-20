@@ -1,7 +1,4 @@
-require_relative 'sales_engine'
-
 class Item
-
   attr_reader :data
 
   def initialize(data)
@@ -9,13 +6,11 @@ class Item
   end
 
   def id
-    id = data[:id]
-    id.to_s.to_i
+    data[:id].to_s.to_i
   end
 
   def merchant_id
-    id = data[:merchant_id]
-    id.to_s.to_i
+    data[:merchant_id].to_s.to_i
   end
 
   def name
@@ -43,8 +38,6 @@ class Item
   end
 
   def merchant
-    mi = merchant_id
-    merchant = SalesEngine.merchants
-    merchant.find_by_id(mi)
+    @merchant ||= SalesEngine.merchants.find_by_id(merchant_id)
   end
 end
