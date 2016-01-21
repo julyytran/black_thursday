@@ -1,5 +1,5 @@
 require 'time'
-module StandardDeviation
+module Calculations
 
   def average_objects_per_merchant(objects)
     (objects.all.count.to_f/merchants.all.count.to_f).round(2)
@@ -27,6 +27,5 @@ module StandardDeviation
         merch_id = data_array.first.merchant_id
         { merch_id => data_array.count }
       end
-    end
-
+  end
 end

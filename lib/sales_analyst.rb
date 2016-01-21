@@ -3,7 +3,7 @@ require_relative '../lib/calculations.rb'
 
 class SalesAnalyst
   include Math
-  include StandardDeviation
+  include Calculations
 
   attr_reader :sales_engine, :merchants, :items, :invoices, :transactions,
               :invoice_items, :custs
@@ -59,9 +59,6 @@ class SalesAnalyst
   end
 
   def average_average_price_per_merchant
-    find_merchant(items)
-    count_data(items)
-
     merch_ids_with_items = count_data(items).map { |hash| hash.keys }.flatten
 
     avg_prices_for_each_merch = merch_ids_with_items.map do |merch_id|
