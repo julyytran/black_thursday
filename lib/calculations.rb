@@ -16,21 +16,15 @@ module Calculations
     stdev * 2
   end
 
-  def all_item_prices
-    @all_item_prices ||= items.all.map { |item| item.unit_price }
-  end
-
-  def avg_item_price
-    @avg_item_price ||= all_item_prices.reduce do |sum, num|
-      (sum + num)
-    end/(all_item_prices.count)
-  end
-
-  def item_sq_diffs
-    @item_sq_diffs ||= all_item_prices.map do |number|
-      (number - avg_item_price) ** 2
-    end
-  end
+  # def all_item_prices
+  #   @all_item_prices ||= items.all.map { |item| item.unit_price }
+  # end
+  #
+  # def avg_item_price
+  #   @avg_item_price ||= all_item_prices.reduce do |sum, num|
+  #     (sum + num)
+  #   end/(all_item_prices.count)
+  # end
 
   def find_merchant(data)
       merchants.merchant_ids.map do |merchant_id|
