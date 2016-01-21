@@ -26,14 +26,14 @@ class MerchantRepository
   end
 
   def merchant_ids
-    @merchant_ids ||= all.map { |merchant| merchant.id }
+    merchant_ids ||= all.map { |merchant| merchant.id }
   end
 
   def merchant_item_count
-    @merchant_item_count ||= all.map(&:items_count)
+    merchant_item_count ||= all.map(&:items_count)
   end
 
   def merchant_invoice_count
-    @merchant_invoice_count ||= all.map(&:invoices_count)
+    merchant_invoice_count ||= all.map(&:invoices_count)
   end
 end

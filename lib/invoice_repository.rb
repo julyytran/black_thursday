@@ -35,7 +35,7 @@ class InvoiceRepository
    end
 
   def invoices_each_day
-    @invoices_each_day ||= all.group_by do |invoice|
+    invoices_each_day ||= all.group_by do |invoice|
       invoice.created_at.strftime("%A")
      end
   end
