@@ -22,7 +22,11 @@ class Item
   end
 
   def unit_price
+    if data[:unit_price].nil?
+      BigDecimal.new(0)
+    else
     BigDecimal.new(data[:unit_price], data[:unit_price].length)
+  end
   end
 
   def unit_price_to_dollars

@@ -115,15 +115,15 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_all_merchants_with_pending_invoices
-    skip
     pending = sa.merchants_with_pending_invoices
 
     assert_equal Merchant, pending[0].class
-    assert_equal 6, pending.count
+    assert_equal 9, pending.count
   end
 
   def test_returns_merchants_with_only_one_item
     skip
+    #no merchant in fixture has only one item
     merchants = sa.merchants_with_only_one_item
 
     refute merchants.empty?
@@ -134,7 +134,8 @@ class SalesAnalystTest < Minitest::Test
 
   def test_returns_merchants_with_only_one_item_registered_in_specific_month
     skip
-    merchants = sa.merchants_with_only_one_item_registered_in_month("July")
+    #no merchants in fixtures meet this
+    merchants = sa.merchants_with_only_one_item_registered_in_month("March")
 
     refute merchants.empty?
     assert_equal 0, merchants.count
@@ -143,14 +144,13 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_returns_revenue_by_merchant_for_given_merchant
-    skip
     revenue = sa.revenue_by_merchant(12334112)
 
-    assert_equal 0, revenue
+    assert_equal BigDecimal, revenue.class
+    assert revenue.inspect.include?('0.79179E5')
   end
 
   def test_returns_most_sold_item_for_given_merchant
-    skip
     item = sa.most_sold_item_for_merchant(12334112)
 
     assert_equal 0, item.id

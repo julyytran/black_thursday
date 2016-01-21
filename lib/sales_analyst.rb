@@ -161,39 +161,56 @@ class SalesAnalyst
     top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
-  def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
-    pending_invoices = successful_invoices.select { |invoice| invoice.status == :pending}
-    merch_ids = pending_invoices.map { |invoice| invoice.merchant_id }.uniq
-    merchs = merch_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
-
-
-    # failed_transactions = transactions.all.select do |trans|
-    #   trans.result == 'failed'
-    # end
-    # invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
-    # pending_invoices = invoice_ids.map {|invoice| invoices.find_by_id(invoice)}
-    # merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
-    # merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
+  def merchants_with_pending_invoices
+    merchants.all.find_all do |merchant|
+      merchant.invoices.any?{|invoice| !invoice.is_paid_in_full?}
+    end
   end
 
   def merchants_with_only_one_item
-    # => [merchant, merchant, merchant]
-
+    merchants.all.select{ |merch| merch.items_count == 1}
   end
 
   def merchants_with_only_one_item_registered_in_month(month)
-    # => [merchant, merchant, merchant]
-
+    merchants_with_only_one_item.select do |merch|
+      merch.created_at.month == Time.parse(month).month
+    end
   end
 
   def revenue_by_merchant(merchant_id)
-    # => $$
+    merch = merchants.find_by_id(merchant_id)
+    merch.items_prices.reduce(:+) #invoice item prices?
+  end
 
+  def total_revenue_by_date(date)
+   invoice_ids = invoices.find_all_by_date_created(date.to_s)
+   total_revenue = invoice_ids.map { |invoice| invoice.total }
+   final = total_revenue.map { |revenue| revenue }.reduce(:+)
+ end
+
+  def merchants_ranked_by_revenue
+    merchants.all.pop
+    # require 'pry'
+    # binding.pry
+    merchs = merchants.all.sort_by {|merch| merch.invoice_items_prices.reduce(:+)}
+    # all_merch_revenue = merchants.all.map {|merch| merch.items_prices.reduce(:+)}
+    # require 'pry'
+    # binding.pry
+    # full_merch_revenue = all_merch_revenue.reject {|num| num.nil?}
+    # ids = merch_ids.sort_by.with_index do |num, index|
+    #   full_merch_revenue[index]
+    #   merchants.
+    # end
+    # all_merch_revenue.sort
   end
 
   def most_sold_item_for_merchant(merchant_id)
   #=> [item] (in terms of quantity sold)
-
+    merch = merchants.find_by_id(merchant_id)
+    most_sold_item_ids = merch.most_sold_item_ids
+    most_sold = most_sold_item_ids.map {|id| items.find_by_id(id)}
+# require 'pry'
+# binding.pry
   end
 
   def best_item_for_merchant(merchant_id)
