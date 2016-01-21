@@ -98,9 +98,9 @@ class SalesAnalyst
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-    invoice_counts = invoices_each_day.values.map { |invoice_group|
+    invoice_counts = invoices.invoices_each_day.values.map { |invoice_group|
       invoice_group.count}
-    days = invoices_each_day.keys
+    days = invoices.invoices_each_day.keys
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
     sq_diffs = invoice_counts.map do |number|
@@ -148,7 +148,7 @@ class SalesAnalyst
 
   def revenue_by_merchant(merchant_id)
     merch = merchants.find_by_id(merchant_id)
-    merch.items_prices.reduce(:+) #invoice item prices?
+    merch.items_prices.reduce(:+)
   end
 
   def total_revenue_by_date(date)
@@ -166,7 +166,7 @@ class SalesAnalyst
       end
     end
 
-    ids_to_rev = merchant_ids.zip(revenues).to_h
+    ids_to_rev = merchants.merchant_ids.zip(revenues).to_h
     ranked = ids_to_rev.sort_by {|k, v| v}.reverse
     final_rank = ranked.reject {|mini_ar| mini_ar[1] == 0}
 
