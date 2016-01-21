@@ -1,35 +1,6 @@
 require 'time'
 module Calculations
 
-  def successful_invoices
-    @successful_invoices ||= transactions.successful_transactions
-    @successful_invoices.map(&:invoice_id).map {|id| invoices.find_by_id(id) }
-  end
-
-  def merchant_ids
-    @merchant_ids ||= merchants.all.map { |merchant| merchant.id }
-  end
-
-  def merchant_items
-    @merchant_items ||= merchants.map(&:item).reject { |element| element.empty?}
-  end
-
-  def merchant_invoices
-    @merchant_invoices ||= merchants.all.map(&:invoices)
-  end
-
-  def merchant_item_count
-    @merchant_item_count ||= merchants.all.map(&:items_count)
-  end
-
-  def merchant_invoice_count
-    @merchant_invoice_count ||= merchants.all.map(&:invoices_count)
-  end
-
-  def merchant_items_prices
-    @merchant_items_prices ||= merchants.all.map(&:items_prices)
-  end
-
   def average_objects_per_merchant(objects)
     (objects.all.count.to_f/merchants.all.count.to_f).round(2)
   end
@@ -68,7 +39,7 @@ module Calculations
   end
 
   def find_merchant(data)
-      merchant_ids.map do |merchant_id|
+      merchants.merchant_ids.map do |merchant_id|
         data.find_all_by_merchant_id(merchant_id)
       end.reject { |element| element.empty?}
     end

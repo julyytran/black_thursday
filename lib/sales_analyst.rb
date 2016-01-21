@@ -27,14 +27,14 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant_standard_deviation
-    sq_diffs = merchant_item_count.map do |number|
+    sq_diffs = merchants.merchant_item_count.map do |number|
       (number - average_items_per_merchant) ** 2
     end
     stdev_from_sq_diffs(sq_diffs)
   end
 
   def average_invoices_per_merchant_standard_deviation
-    sq_diffs = merchant_invoice_count.map do |number|
+    sq_diffs = merchants.merchant_invoice_count.map do |number|
       (number - average_invoices_per_merchant) ** 2
     end
     stdev_from_sq_diffs(sq_diffs)
@@ -148,7 +148,7 @@ class SalesAnalyst
 
   def revenue_by_merchant(merchant_id)
     merch = merchants.find_by_id(merchant_id)
-    merch.items_prices.reduce(:+) #invoice item prices?
+    merch.items_prices.reduce(:+)
   end
 
   def total_revenue_by_date(date)
@@ -166,7 +166,7 @@ class SalesAnalyst
       end
     end
 
-    ids_to_rev = merchant_ids.zip(revenues).to_h
+    ids_to_rev = merchants.merchant_ids.zip(revenues).to_h
     ranked = ids_to_rev.sort_by {|k, v| v}.reverse
     final_rank = ranked.reject {|mini_ar| mini_ar[1] == 0}
 
