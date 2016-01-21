@@ -30,4 +30,7 @@ class InvoiceRepository
     all.select { |invoice| invoice.status == status.to_sym }
   end
 
-end
+  def find_all_by_date_created(date)
+     all.select { |invoice| invoice.created_at == Time.parse(date) }
+   end
+ end

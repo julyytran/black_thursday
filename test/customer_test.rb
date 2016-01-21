@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'time'
 require_relative '../lib/customer'
 
 class CustomerTest < Minitest::Test
@@ -27,6 +28,5 @@ class CustomerTest < Minitest::Test
 
   def test_returns_date_customer_was_updated
     assert_equal "2012-03-27 14:54:10 UTC", customer.updated_at.to_s
-
   end
 end

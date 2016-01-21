@@ -53,7 +53,8 @@ class SalesAnalyst
 
   def average_item_price_for_merchant_in_cents(merch_id)
     merchant = merchants.find_by_id(merch_id)
-    merchant_total_price = merchant.items_prices.reduce { |sum, num| (sum + num) }
+    merchant_total_price = merchant.items_prices.reduce { |sum, num|
+      (sum + num) }
     @avg_cents = merchant_total_price/(merchant.items_prices.count)
   end
 
@@ -85,17 +86,20 @@ class SalesAnalyst
 
   def top_merchants_by_invoice_count
     threshold = average_invoices_per_merchant + two_stdevs
-    most = merchants.all.select { |merchant| merchant.invoices_count > threshold }
+    most = merchants.all.select { |merchant|
+      merchant.invoices_count > threshold }
   end
 
   def bottom_merchants_by_invoice_count
     threshold = average_invoices_per_merchant - two_stdevs
-    least = merchants.all.select { |merchant| merchant.invoices_count < threshold}
+    least = merchants.all.select { |merchant|
+      merchant.invoices_count < threshold }
   end
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-    invoice_counts = invoices_each_day.values.map { |invoice_group| invoice_group.count}
+    invoice_counts = invoices_each_day.values.map { |invoice_group|
+      invoice_group.count}
     days = invoices_each_day.keys
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
@@ -122,70 +126,77 @@ class SalesAnalyst
       percent_status.round(2)
   end
 
-  def total_revenue_by_date(date)
-    # => $$
-    transactions_by_given_date = transactions.all.select do |trans|
-      if trans.created_at.to_s.include?(date.to_s)
-        0
-      else
-        trans.created_at.to_s.include?(date.to_s) && trans.result == "success"
-      end
-    end
-
-    invoice_id = transactions_by_given_date.map { |trans| trans.invoice_id }
-
-    item_id = invoice_id.map do |id|
-      invoice_items.find_all_by_invoice_id(id)
-    end.flatten
-
-    price_by_quantity = item_id.map do |invoice_item|
-      invoice_item.unit_price * invoice_item.quantity.to_i
-    end
-    price_by_quantity.reduce(:+).to_f/100
-  end
-
   def top_revenue_earners(x = 20)
-
-
+    merchants_ranked_by_revenue[0,x]
   end
 
-  def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
-    pending_invoices = successful_invoices.select { |invoice| invoice.status == :pending}
-    merch_ids = pending_invoices.map { |invoice| invoice.merchant_id }.uniq
-    merchs = merch_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
-
-
-    # failed_transactions = transactions.all.select do |trans|
-    #   trans.result == 'failed'
-    # end
-    # invoice_ids = failed_transactions.map { |tran| tran.invoice_id }
-    # pending_invoices = invoice_ids.map {|invoice| invoices.find_by_id(invoice)}
-    # merchant_ids = pending_invoices.map { |invoice| invoice.merchant_id }
-    # merchant_ids.map { |merchant_id| merchants.find_by_id(merchant_id) }
+  def merchants_with_pending_invoices
+    merchants.all.find_all do |merchant|
+      merchant.invoices.any?{|invoice| !invoice.is_paid_in_full?}
+    end
   end
 
   def merchants_with_only_one_item
-    # => [merchant, merchant, merchant]
-
+    merchants.all.select{ |merch| merch.items_count == 1}
   end
 
   def merchants_with_only_one_item_registered_in_month(month)
-    # => [merchant, merchant, merchant]
-
+    merchants_with_only_one_item.select do |merch|
+      merch.created_at.month == Time.parse(month).month
+    end
   end
 
   def revenue_by_merchant(merchant_id)
-    # => $$
+    merch = merchants.find_by_id(merchant_id)
+    merch.items_prices.reduce(:+) #invoice item prices?
+  end
 
+  def total_revenue_by_date(date)
+   invoice_ids = invoices.find_all_by_date_created(date.to_s)
+   total_revenue = invoice_ids.map { |invoice| invoice.total }
+   final = total_revenue.map { |revenue| revenue }.reduce(:+)
+ end
+
+  def merchants_ranked_by_revenue
+    revenues = merchants.all.map do |merch|
+      if merch.revenue.nil?
+        0
+      else
+        merch.revenue
+      end
+    end
+
+    ids_to_rev = merchant_ids.zip(revenues).to_h
+    ranked = ids_to_rev.sort_by {|k, v| v}.reverse
+    final_rank = ranked.reject {|mini_ar| mini_ar[1] == 0}
+
+    merchs = final_rank.map {|id_rev| merchants.find_by_id(id_rev[0])}
   end
 
   def most_sold_item_for_merchant(merchant_id)
-  #=> [item] (in terms of quantity sold)
+    merch = merchants.find_by_id(merchant_id)
 
+    quantities = merch.invoice_items_paid_in_full.map {|i_item| i_item.quantity}
+    ids = merch.invoice_items_paid_in_full.map(&:item_id)
+
+    item_ids_to_qs = ids.zip(quantities).to_h
+    ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
+
+    max = ranked[0][1]
+
+    most_sold_ids = ranked.to_h.select {|k, v| v == max}.keys
+    most_sold = most_sold_ids.map {|id| items.find_by_id(id)}
   end
 
   def best_item_for_merchant(merchant_id)
-    #=> item (in terms of revenue generated)
+    merch = merchants.find_by_id(merchant_id)
+    revenues = merch.invoice_items_paid_in_full.map {|i_item|
+      i_item.quantity * i_item.unit_price}
+    ids = merch.invoice_items_paid_in_full.map(&:item_id)
 
+    item_ids_to_qs = ids.zip(revenues).to_h
+    ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
+    id = ranked[0][0]
+    best = items.find_by_id(id)
   end
 end

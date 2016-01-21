@@ -1,3 +1,4 @@
+require 'time'
 class Customer
   attr_reader :data
 
@@ -26,6 +27,7 @@ class Customer
   end
 
   def merchants
-    @merchants ||= SalesEngine.invoices.find_all_by_customer_id(id).map { |invoice| invoice.merchant}
+    @merchants ||= SalesEngine.invoices.find_all_by_customer_id(id)
+    @merchants.map { |invoice| invoice.merchant}
   end
 end

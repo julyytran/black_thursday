@@ -1,6 +1,6 @@
 class Merchant
 
-  attr_reader :data
+  attr_reader :data, :i_items
 
   def initialize(data)
     @data = data
@@ -32,7 +32,21 @@ class Merchant
   end
 
   def items_prices
-    @items_prices ||= items.map {|item| item.unit_price}
+    if items.nil?
+      return 0
+    else
+    items_prices = items.map {|item| item.unit_price}
+    end
+  end
+
+  def revenue
+    paid = invoices.select {|invoice| invoice.is_paid_in_full?}
+    subtotals = paid.map {|invoice| invoice.total }.reduce(:+)
+  end
+
+  def invoice_items_prices
+    invoice_items_prices = invoice_items.map {|i_item_group|
+      i_item_group.map(&:unit_price)}.reduce(:+)
   end
 
   def invoices
@@ -43,7 +57,20 @@ class Merchant
     invoices.count
   end
 
+  def invoice_items
+    invoice_ids = invoices.map(&:id)
+    @i_items ||= SalesEngine.invoice_items
+    invoice_items = invoice_ids.flat_map {|invoice_id|
+      i_items.find_all_by_invoice_id(invoice_id)}
+  end
+
+  def invoice_items_paid_in_full
+    paid_invoices = invoices.select {|invoice| invoice.is_paid_in_full?}
+    ii_item = paid_invoices.flat_map {|invoice| invoice.invoice_items}
+  end
+
   def customers
-    @customers ||= invoices.map { |invoice| SalesEngine.customers.find_by_id(invoice.customer_id) }.uniq
+    @customers ||= invoices.map { |invoice|
+      SalesEngine.customers.find_by_id(invoice.customer_id) }.uniq
   end
 end
