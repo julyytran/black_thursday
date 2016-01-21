@@ -123,7 +123,6 @@ class SalesAnalyst
   end
 
   def total_revenue_by_date(date)
-    # => $$
     transactions_by_given_date = transactions.all.select do |trans|
       if trans.created_at.to_s.include?(date.to_s)
         0
@@ -145,20 +144,7 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
-    # => [merchant, merchant, merchant]
-    # merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
-    # invoice_values = merchant_to_invoices.values
-    # merchant_ids = merchant_to_invoices.keys
-    merchant_revenue_subtotals = merchant_invoices.map { |invoice_group|
-      invoice_group.map { |invoice| invoice.total } }
-
-    merchant_invoice_totals = merchant_revenue_subtotals.map { |subtotal_group|
-      subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
-
-    merchant_totals = merchant_ids.zip(merchant_invoice_totals).to_h
-    high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
-    top_merchants = high_to_low[0,x]
-    top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
+    merchants_ranked_by_revenue[0,x]
   end
 
   def merchants_with_pending_invoices
@@ -189,32 +175,44 @@ class SalesAnalyst
  end
 
   def merchants_ranked_by_revenue
-    merchants.all.pop
-    # require 'pry'
-    # binding.pry
-    merchs = merchants.all.sort_by {|merch| merch.invoice_items_prices.reduce(:+)}
-    # all_merch_revenue = merchants.all.map {|merch| merch.items_prices.reduce(:+)}
-    # require 'pry'
-    # binding.pry
-    # full_merch_revenue = all_merch_revenue.reject {|num| num.nil?}
-    # ids = merch_ids.sort_by.with_index do |num, index|
-    #   full_merch_revenue[index]
-    #   merchants.
-    # end
-    # all_merch_revenue.sort
+    revenues = merchants.all.map do |merch|
+      if merch.revenue.nil?
+        0
+      else
+        merch.revenue
+      end
+    end
+
+    ids_to_rev = merchant_ids.zip(revenues).to_h
+    ranked = ids_to_rev.sort_by {|k, v| v}.reverse
+    final_rank = ranked.reject {|mini_ar| mini_ar[1] == 0}
+
+    merchs = final_rank.map {|id_rev| merchants.find_by_id(id_rev[0])}
   end
 
   def most_sold_item_for_merchant(merchant_id)
-  #=> [item] (in terms of quantity sold)
     merch = merchants.find_by_id(merchant_id)
-    most_sold_item_ids = merch.most_sold_item_ids
-    most_sold = most_sold_item_ids.map {|id| items.find_by_id(id)}
-# require 'pry'
-# binding.pry
+
+    quantities = merch.invoice_items_paid_in_full.map {|i_item| i_item.quantity}
+    ids = merch.invoice_items_paid_in_full.map(&:item_id)
+
+    item_ids_to_qs = ids.zip(quantities).to_h
+    ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
+
+    max = ranked[0][1]
+
+    most_sold_ids = ranked.to_h.select {|k, v| v == max}.keys
+    most_sold = most_sold_ids.map {|id| items.find_by_id(id)}
   end
 
   def best_item_for_merchant(merchant_id)
-    #=> item (in terms of revenue generated)
+    merch = merchants.find_by_id(merchant_id)
+    revenues = merch.invoice_items_paid_in_full.map {|i_item| i_item.quantity * i_item.unit_price}
+    ids = merch.invoice_items_paid_in_full.map(&:item_id)
 
+    item_ids_to_qs = ids.zip(revenues).to_h
+    ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
+    id = ranked[0][0]
+    best = items.find_by_id(id)
   end
 end

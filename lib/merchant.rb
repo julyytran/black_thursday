@@ -39,35 +39,22 @@ class Merchant
     end
   end
 
-  def most_sold_item_ids
-    quantities = invoice_items.map do |item_group|
-      {item_group.item_id => item.quantity}
-    end.reduce Hash.new, :merge
-
-  # def revenue
-  #   items_prices.reduce(&:+)
+  # def most_sold_item_ids
+  #   quantities = invoice_items.map {|i_item| i_item.quantity}
+  #   ids = invoice_items.map(&:item_id)
+  #
+  #   item_ids_to_qs = ids.zip(quantities).to_h
+  #   ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
+  #
+  #   max = ranked[0][1]
+  #
+  #   most_sold_ids = ranked.to_h.select {|k, v| v == max}.keys
   # end
-    # quantities = invoice_items.reduce({}) do |hash, invoice_item|
-    #   hash[invoice_item.item_id] = 0 if hash[invoice_item.item_id].nil?
-    #   hash[invoice_item.item_id] += invoice_item.quantity
-    #   hash
-    # end
 
-    quant_ranking = quantities.sort_by { |k,v| v}.reverse
-    max = quant_ranking[0][1]
-    quant_rank = quant_ranking.to_h
-
-    quant_counts = quant_rank.values
-    item_id = quant_rank.keys
-
-    most_sold_ids = item_id.find_all.with_index do |num, index|
-      quant_counts[index] == max
-    end
+  def revenue
+    paid = invoices.select {|invoice| invoice.is_paid_in_full?}
+    subtotals = paid.map {|invoice| invoice.total }.reduce(:+)
   end
-
-  # def revenue
-  #   invoice_items_prices.reduce(:+)
-  # end
 
   def invoice_items_prices
     invoice_items_prices = invoice_items.map {|i_item_group| i_item_group.map(&:unit_price)}.reduce(:+)
@@ -84,7 +71,12 @@ class Merchant
   def invoice_items
     invoice_ids = invoices.map(&:id)
     @i_items ||= SalesEngine.invoice_items
-    invoice_items = invoice_ids.map {|invoice_id| i_items.find_all_by_invoice_id(invoice_id)}
+    invoice_items = invoice_ids.flat_map {|invoice_id| i_items.find_all_by_invoice_id(invoice_id)}
+  end
+
+  def invoice_items_paid_in_full
+    paid_invoices = invoices.select {|invoice| invoice.is_paid_in_full?}
+    ii_item = paid_invoices.flat_map {|invoice| invoice.invoice_items}
   end
 
   def customers

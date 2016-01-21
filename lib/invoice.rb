@@ -56,15 +56,12 @@ class Invoice
      end
    end
 
-   def invoice_items
-     @invoice_item_repo ||= SalesEngine.invoice_items
-     if self.is_paid_in_full?
-       invoice_item_repo.find_all_by_invoice_id(id)
-     end
-   end
+  def invoice_items
+    @invoice_item_repo ||= SalesEngine.invoice_items.find_all_by_invoice_id(id)
+  end
 
-   def total
-     subtotals = invoice_items.map { |i_item| i_item.unit_price * i_item.quantity }
-     total_bd = subtotals.reduce { |sum, num| (sum + num)}/100
-   end
+  def total
+    subtotals = invoice_items.map { |i_item| i_item.unit_price * i_item.quantity }
+    total_bd = subtotals.reduce { |sum, num| (sum + num)}/100
+  end
 end
