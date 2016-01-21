@@ -53,7 +53,8 @@ class SalesAnalyst
 
   def average_item_price_for_merchant_in_cents(merch_id)
     merchant = merchants.find_by_id(merch_id)
-    merchant_total_price = merchant.items_prices.reduce { |sum, num| (sum + num) }
+    merchant_total_price = merchant.items_prices.reduce { |sum, num|
+      (sum + num) }
     @avg_cents = merchant_total_price/(merchant.items_prices.count)
   end
 
@@ -85,17 +86,20 @@ class SalesAnalyst
 
   def top_merchants_by_invoice_count
     threshold = average_invoices_per_merchant + two_stdevs
-    most = merchants.all.select { |merchant| merchant.invoices_count > threshold }
+    most = merchants.all.select { |merchant|
+      merchant.invoices_count > threshold }
   end
 
   def bottom_merchants_by_invoice_count
     threshold = average_invoices_per_merchant - two_stdevs
-    least = merchants.all.select { |merchant| merchant.invoices_count < threshold}
+    least = merchants.all.select { |merchant|
+      merchant.invoices_count < threshold }
   end
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-    invoice_counts = invoices_each_day.values.map { |invoice_group| invoice_group.count}
+    invoice_counts = invoices_each_day.values.map { |invoice_group|
+      invoice_group.count}
     days = invoices_each_day.keys
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
@@ -120,27 +124,6 @@ class SalesAnalyst
       status_count = invoices_by_status[shipping_status].count
       percent_status = ((status_count.to_f * 100.0) / invoices.all.count.to_f)
       percent_status.round(2)
-  end
-
-  def total_revenue_by_date(date)
-    transactions_by_given_date = transactions.all.select do |trans|
-      if trans.created_at.to_s.include?(date.to_s)
-        0
-      else
-        trans.created_at.to_s.include?(date.to_s) && trans.result == "success"
-      end
-    end
-
-    invoice_id = transactions_by_given_date.map { |trans| trans.invoice_id }
-
-    item_id = invoice_id.map do |id|
-      invoice_items.find_all_by_invoice_id(id)
-    end.flatten
-
-    price_by_quantity = item_id.map do |invoice_item|
-      invoice_item.unit_price * invoice_item.quantity.to_i
-    end
-    price_by_quantity.reduce(:+).to_f/100
   end
 
   def top_revenue_earners(x = 20)
@@ -207,7 +190,8 @@ class SalesAnalyst
 
   def best_item_for_merchant(merchant_id)
     merch = merchants.find_by_id(merchant_id)
-    revenues = merch.invoice_items_paid_in_full.map {|i_item| i_item.quantity * i_item.unit_price}
+    revenues = merch.invoice_items_paid_in_full.map {|i_item|
+      i_item.quantity * i_item.unit_price}
     ids = merch.invoice_items_paid_in_full.map(&:item_id)
 
     item_ids_to_qs = ids.zip(revenues).to_h

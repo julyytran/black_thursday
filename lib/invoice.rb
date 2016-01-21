@@ -1,5 +1,8 @@
+require_relative 'sales_engine'
+
 class Invoice
-  attr_reader :data, :item_repo, :item_ids, :paid_invoices_ids, :invoice_item_repo
+  attr_reader :data, :item_repo, :item_ids, :paid_invoices_ids,
+              :invoice_item_repo
 
   def initialize(data)
     @data = data
@@ -34,7 +37,8 @@ class Invoice
   end
 
   def items
-    @item_ids ||= SalesEngine.invoice_items.find_all_by_invoice_id(id).map { |invoice_item| invoice_item.item_id}
+    invoice_ids ||= SalesEngine.invoice_items.find_all_by_invoice_id(id)
+    @item_ids = invoice_ids.map { |invoice_item| invoice_item.item_id }
     @item_repo ||= SalesEngine.items
     item_ids.map { |item_id| item_repo.find_by_id(item_id) }
   end
@@ -48,7 +52,9 @@ class Invoice
   end
 
   def is_paid_in_full?
-    @paid_invoices_ids ||= SalesEngine.transactions.successful_transactions.map { |trans| trans.invoice_id}
+    successful_transactions ||= SalesEngine.transactions.successful_transactions
+    @paid_invoices_ids = successful_transactions.map { |trans|
+      trans.invoice_id }
      if paid_invoices_ids.include?(id)
       true
     else

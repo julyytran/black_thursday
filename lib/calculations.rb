@@ -2,7 +2,8 @@ require 'time'
 module Calculations
 
   def successful_invoices
-    @successful_invoices ||= transactions.successful_transactions.map(&:invoice_id).map {|id| invoices.find_by_id(id)}
+    @successful_invoices ||= transactions.successful_transactions
+    @successful_invoices.map(&:invoice_id).map {|id| invoices.find_by_id(id) }
   end
 
   def merchant_ids

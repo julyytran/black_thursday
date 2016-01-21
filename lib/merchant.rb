@@ -39,25 +39,14 @@ class Merchant
     end
   end
 
-  # def most_sold_item_ids
-  #   quantities = invoice_items.map {|i_item| i_item.quantity}
-  #   ids = invoice_items.map(&:item_id)
-  #
-  #   item_ids_to_qs = ids.zip(quantities).to_h
-  #   ranked = item_ids_to_qs.sort_by {|k, v| v}.reverse
-  #
-  #   max = ranked[0][1]
-  #
-  #   most_sold_ids = ranked.to_h.select {|k, v| v == max}.keys
-  # end
-
   def revenue
-    paid = invoices.select {|invoice| invoice.is_paid_in_full?}
-    subtotals = paid.map {|invoice| invoice.total }.reduce(:+)
+    paid = invoices.select { |invoice| invoice.is_paid_in_full? }
+    subtotals = paid.map {|invoice| invoice.total}.reduce(:+)
   end
 
   def invoice_items_prices
-    invoice_items_prices = invoice_items.map {|i_item_group| i_item_group.map(&:unit_price)}.reduce(:+)
+    invoice_items_prices = invoice_items.map {|i_item_group|
+      i_item_group.map(&:unit_price)}.reduce(:+)
   end
 
   def invoices
@@ -71,7 +60,8 @@ class Merchant
   def invoice_items
     invoice_ids = invoices.map(&:id)
     @i_items ||= SalesEngine.invoice_items
-    invoice_items = invoice_ids.flat_map {|invoice_id| i_items.find_all_by_invoice_id(invoice_id)}
+    invoice_items = invoice_ids.flat_map {|invoice_id|
+      i_items.find_all_by_invoice_id(invoice_id)}
   end
 
   def invoice_items_paid_in_full
@@ -80,6 +70,7 @@ class Merchant
   end
 
   def customers
-    @customers ||= invoices.map { |invoice| SalesEngine.customers.find_by_id(invoice.customer_id) }.uniq
+    @customers ||= invoices.map { |invoice|
+      SalesEngine.customers.find_by_id(invoice.customer_id) }.uniq
   end
 end

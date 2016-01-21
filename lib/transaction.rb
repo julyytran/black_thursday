@@ -1,3 +1,5 @@
+require 'time'
+
 class Transaction
   attr_reader :data
 

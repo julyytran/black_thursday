@@ -31,6 +31,6 @@ class InvoiceRepository
   end
 
   def find_all_by_date_created(date)
-      all.select { |invoice| invoice.created_at == Time.parse(date) }
-  end
-end
+     all.select { |invoice| invoice.created_at == Time.parse(date) }
+   end
+ end
