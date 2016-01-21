@@ -27,14 +27,14 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant_standard_deviation
-    sq_diffs = merchant_item_count.map do |number|
+    sq_diffs = merchants.merchant_item_count.map do |number|
       (number - average_items_per_merchant) ** 2
     end
     stdev_from_sq_diffs(sq_diffs)
   end
 
   def average_invoices_per_merchant_standard_deviation
-    sq_diffs = merchant_invoice_count.map do |number|
+    sq_diffs = merchants.merchant_invoice_count.map do |number|
       (number - average_invoices_per_merchant) ** 2
     end
     stdev_from_sq_diffs(sq_diffs)
@@ -76,11 +76,11 @@ class SalesAnalyst
   end
 
   def golden_items
-    all_item_prices
-    avg_item_price
+    items.all_item_prices
+    # items.avg_item_price
     item_sq_diffs
     item_stdev = stdev_from_sq_diffs(item_sq_diffs)
-    threshold = (avg_item_price + (item_stdev*2))
+    threshold = (items.avg_item_price + (item_stdev*2))
     golden = items.all.select { |item| item.unit_price >= threshold }
   end
 

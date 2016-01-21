@@ -37,4 +37,14 @@ class ItemRepository
   def find_all_by_merchant_id(id)
     all.select { |x| x.merchant_id == id }
   end
+
+  def all_item_prices
+    @all_item_prices ||= all.map { |item| item.unit_price }
+  end
+
+  def avg_item_price
+    @avg_item_price ||= all_item_prices.reduce do |sum, num|
+      (sum + num)
+    end/(all_item_prices.count)
+  end
 end
