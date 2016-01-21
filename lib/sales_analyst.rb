@@ -145,20 +145,8 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(x = 20)
-    # => [merchant, merchant, merchant]
-    # merchant_to_invoices = successful_invoices.group_by(&:merchant_id)
-    # invoice_values = merchant_to_invoices.values
-    # merchant_ids = merchant_to_invoices.keys
-    merchant_revenue_subtotals = merchant_invoices.map { |invoice_group|
-      invoice_group.map { |invoice| invoice.total } }
 
-    merchant_invoice_totals = merchant_revenue_subtotals.map { |subtotal_group|
-      subtotal_group.reduce { |sum, subtotal| (sum + subtotal) } }
 
-    merchant_totals = merchant_ids.zip(merchant_invoice_totals).to_h
-    high_to_low = merchant_totals.sort_by { |k,v| v}.reverse.to_h.keys
-    top_merchants = high_to_low[0,x]
-    top_merchants.map { |merchant_id| merchants.find_by_id(merchant_id) }
   end
 
   def merchants_with_pending_invoices #=> [merchant, merchant, merchant]
