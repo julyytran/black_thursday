@@ -33,4 +33,10 @@ class InvoiceRepository
   def find_all_by_date_created(date)
      all.select { |invoice| invoice.created_at == Time.parse(date) }
    end
+
+  def invoices_each_day
+    @invoices_each_day ||= all.group_by do |invoice|
+      invoice.created_at.strftime("%A")
+     end
+  end
  end

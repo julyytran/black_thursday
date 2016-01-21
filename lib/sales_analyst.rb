@@ -98,9 +98,9 @@ class SalesAnalyst
 
   def top_days_by_invoice_count
     avg_invoices_per_day = (invoices.all.count.to_f/7).round(2)
-    invoice_counts = invoices_each_day.values.map { |invoice_group|
+    invoice_counts = invoices.invoices_each_day.values.map { |invoice_group|
       invoice_group.count}
-    days = invoices_each_day.keys
+    days = invoices.invoices_each_day.keys
     days_and_invoice_counts = invoice_counts.zip(days).to_h
 
     sq_diffs = invoice_counts.map do |number|

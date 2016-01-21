@@ -32,12 +32,6 @@ module Calculations
     end
   end
 
-  def invoices_each_day
-    @invoices_each_day ||= invoices.all.group_by do |invoice|
-      invoice.created_at.strftime("%A")
-    end
-  end
-
   def find_merchant(data)
       merchants.merchant_ids.map do |merchant_id|
         data.find_all_by_merchant_id(merchant_id)
