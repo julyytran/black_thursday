@@ -3,7 +3,7 @@ require_relative '../lib/calculations.rb'
 
 class SalesAnalyst
   include Math
-  include Calculations
+  include StandardDeviation
 
   attr_reader :sales_engine, :merchants, :items, :invoices, :transactions,
               :invoice_items, :custs
@@ -76,15 +76,12 @@ class SalesAnalyst
   end
 
   def golden_items
-    all_item_prices
-    avg_item_price
-
-    item_sq_diffs = all_item_prices.map do |number|
-      (number - avg_item_price) ** 2
+    item_sq_diffs = items.all_item_prices.map do |number|
+      (number - items.avg_item_price) ** 2
     end
 
     item_stdev = stdev_from_sq_diffs(item_sq_diffs)
-    threshold = (avg_item_price + (item_stdev*2))
+    threshold = (items.avg_item_price + (item_stdev*2))
     golden = items.all.select { |item| item.unit_price >= threshold }
   end
 
