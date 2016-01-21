@@ -40,8 +40,9 @@ class Merchant
   end
 
   def revenue
-    paid = invoices.select {|invoice| invoice.is_paid_in_full?}
-    subtotals = paid.map {|invoice| invoice.total }.reduce(:+)
+    paid = invoices.select { |invoice| invoice.is_paid_in_full? }
+    subtotals = paid.map {|invoice| invoice.total
+     }.reduce(:+)
   end
 
   def invoice_items_prices
